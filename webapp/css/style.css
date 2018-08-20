@@ -1,0 +1,16 @@
+.dndAvatarStyle {
+    width: 10rem;
+    height: 10rem;
+    background: #1a9898;
+    border: 1px solid #1a9898;
+    border-radius: 50%;
+}
+
+.whiteText {
+    color: #fafafa;
+}
+
+.avatarIconSize {
+    padding-top: 1rem;
+    font-size: 3rem;
+}
