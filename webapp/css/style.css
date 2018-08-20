@@ -1,8 +1,8 @@
 .dndAvatarStyle {
     width: 10rem;
     height: 10rem;
-    background: #1a9898;
-    border: 1px solid #1a9898;
+    background: #3f5161;
+    border: 3px solid #8ac7eb;
     border-radius: 50%;
 }
 
@@ -13,4 +13,7 @@
 .avatarIconSize {
     padding-top: 1rem;
     font-size: 3rem;
+}
+.hideElement{
+	visibility:hidden;
 }

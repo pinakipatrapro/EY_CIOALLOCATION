@@ -1,0 +1,32 @@
+<mvc:View controllerName="pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocation" xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:ext="pinaki.ey.CIO.allocation.CIOAllocation.extension" xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true" xmlns="sap.m">
+	<Page title="{i18n>createAllocation}" floatingFooter="true">
+		<content>
+			
+			<HBox  justifyContent="Center" class="sapUiSmallMarginTop">
+				<Text text="Select allocation type : " class="sapUiTinyMargin" />
+				<Select>
+					<core:Item text="Actuals"/>
+					<core:Item text="Budget"/>
+				</Select>
+			</HBox>
+			<HBox alignItems="Center" justifyContent="Center" class="sapUiMediumMarginTop" items="{path:'/addAllocationMapingData/map'}">
+				<ext:DnDAvatar text="{name}" icon="{icon}" dragStart="handleOnDragStart" dragEnd="handleOnDragEnd" drop="handleDrop" visible="{visible}"
+					selfMap="{selfMap}"/>
+			</HBox>
+			<VBox alignItems="Center">
+				<core:Icon src="sap-icon://journey-depart" size="8rem" color="#b8cee4"/>
+				<Text text="Drag and Drop elements to create allocatios"/>
+			</VBox>
+			
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<!--<Button text="Reset"/>-->
+				<!--<Button text="Continue"/>-->
+			</OverflowToolbar>
+		</footer>
+	</Page>
+</mvc:View>

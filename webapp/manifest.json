@@ -14,7 +14,6 @@
 			"version": "1.40.12"
 		}
 	},
-
 	"sap.ui": {
 		"technology": "UI5",
 		"icons": {
@@ -33,14 +32,15 @@
 		"supportedThemes": [
 			"sap_hcb",
 			"sap_belize"
-
 		]
 	},
-
 	"sap.ui5": {
 		"rootView": {
 			"viewName": "pinaki.ey.CIO.allocation.CIOAllocation.view.Home",
 			"type": "XML"
+		},
+		"config": {
+			"fullWidth": true
 		},
 		"dependencies": {
 			"minUI5Version": "1.30.0",
@@ -55,6 +55,9 @@
 			"cozy": true
 		},
 		"models": {
+			"": {
+				"type": "sap.ui.model.json.JSONModel"
+			},
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
@@ -74,22 +77,40 @@
 				"async": true,
 				"viewPath": "pinaki.ey.CIO.allocation.CIOAllocation.view",
 				"controlAggregation": "pages",
-				"controlId": "idAppControl",
+				"controlId": "idToolPageApp",
 				"clearControlAggregation": false
 			},
 			"routes": [{
-				"name": "RouteHome",
-				"pattern": "RouteHome",
-				"target": ["TargetHome"]
+				"name": "Welcome",
+				"pattern": "",
+				"target": [
+					"Welcome"
+				]
+			}, {
+				"name": "CreateAllocation",
+				"pattern": "CreateAllocation",
+				"target": [
+					"CreateAllocation"
+				]
 			}],
 			"targets": {
-				"TargetHome": {
+				"Welcome": {
 					"viewType": "XML",
 					"transition": "slide",
 					"clearControlAggregation": false,
-					"viewName": "Home"
+					"viewName": "Welcome"
+				},
+				"CreateAllocation": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewName": "CreateAllocation"
 				}
 			}
 		}
+	},
+	"sap.platform.hcp": {
+		"uri": "webapp",
+		"_version": "1.1.0"
 	}
 }

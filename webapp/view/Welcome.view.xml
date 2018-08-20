@@ -1,0 +1,5 @@
+<mvc:View  xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:ext="pinaki.ey.CIO.allocation.CIOAllocation.extension" xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true" xmlns="sap.m">
+	<MessagePage showHeader="false" text="Manage Allocations" icon="sap-icon://overview-chart" description="Click on the left side menu to navigate to specific pages"/>
+</mvc:View>

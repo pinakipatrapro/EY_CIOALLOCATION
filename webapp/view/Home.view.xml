@@ -1,17 +1,16 @@
 <mvc:View controllerName="pinaki.ey.CIO.allocation.CIOAllocation.controller.Home" xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:ext="pinaki.ey.CIO.allocation.CIOAllocation.extension" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
-	<App id="idAppControl">
+	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:ext="pinaki.ey.CIO.allocation.CIOAllocation.extension" xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true" xmlns="sap.m">
+	<App>
 		<pages>
-			<Page title="{i18n>title}">
-				<content>
-					<HBox alignItems="Center" justifyContent="Center" class="sapUiMediumMarginTop">
-						<ext:DnDAvatar text="Cost Pool" icon="sap-icon://product"/>
-						<ext:DnDAvatar text="IT Service" icon="sap-icon://add"/>
-						<ext:DnDAvatar text="Business Service" icon="sap-icon://product"/>
-						<ext:DnDAvatar text="Business " icon="sap-icon://add"/>
-					</HBox>
-				</content>
-			</Page>
+			<tnt:ToolPage>
+				<tnt:sideContent>
+					<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.toolPageSideContent" type="XML"/>
+				</tnt:sideContent>
+				<tnt:mainContents>
+					<App id="idToolPageApp"></App>
+				</tnt:mainContents>
+			</tnt:ToolPage >
 		</pages>
 	</App>
 </mvc:View>
