@@ -14,8 +14,18 @@ sap.ui.define([], function () {
 			"visible":true,
 			"selfMap":true,
 			"icon":"sap-icon://it-system",
-			"mapTo": ["ITS", "BS"]
-		}, {
+			"mapTo": ["ITS", "BS","ITSG"]
+		},
+		{
+			"name": "IT Service",
+			"id": "ITSG",
+			"visible":false,
+			"selfMap":false,
+			"ghost":true,
+			"icon":"sap-icon://it-system",
+			"mapTo": ["ITSG"]
+		},
+		{
 			"name": "Business Service",
 			"icon":"sap-icon://official-service",
 			"id": "BS",

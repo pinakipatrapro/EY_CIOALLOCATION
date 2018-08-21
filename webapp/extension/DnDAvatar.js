@@ -1,8 +1,7 @@
  sap.ui.define([
  		'sap/m/VBox',
- 		'./DragInfo',
- 		'./DropInfo'
- 	], function (VBox, DragInfo, DropInfo) {
+ 		'./jQuery'
+ 	], function (VBox, jQuery) {
  		"use strict";
 
  		// Control extension
@@ -19,20 +18,15 @@
  						type: "string"
  					}
  				},
- 				aggregations: {
- 					dragDropConfig: {
- 						name: "dragDropConfig",
- 						type: "sap.ui.core.dnd.DragDropBase",
- 						multiple: true,
- 						singularName: "dragDropConfig"
- 					}
- 				},
  				events: {
  					"dragStart": {},
  					"dragEnd": {},
  					"drop": {
  						parameters: {
- 							dndEvent: {
+ 							source: {
+ 								type: "object"
+ 							},
+ 							target: {
  								type: "object"
  							}
  						}
@@ -63,36 +57,39 @@
  				}).addStyleClass('sapUiTinyMargin').addStyleClass('whiteText')
  			);
  			this.setAlignItems('Center');
- 			this.addDragDropConfig(new DragInfo({
- 				dragStart: function () {
- 					that.fireDragStart({});
- 				},
- 				dragEnd: function () {
- 					that.fireDragEnd({});
- 				}
- 			}));
- 			this.addDragDropConfig(new DropInfo({
- 				drop: function (evt) {
- 					that.fireDrop({
- 						dndEvent: evt
- 					});
- 				}
- 			}));
+
  		};
  		dndAvatar.prototype.onAfterRendering = function (oEvent) {
-
+ 			this.addDNDConfig();
  		};
- 		// Control extension for custom drop config
- 		dndAvatar.prototype.ondragenter = function (oEvent) {
- 			oEvent.dragSession.setIndicatorConfig({
- 				borderRadius: "50%",
- 				border: "3px solid rgb(82, 135, 179)",
- 				// marginTop: ".25rem",
- 				background: "#65a5a5"
+ 		dndAvatar.prototype.addDNDConfig = function (oEvent) {
+ 			var that = this;
+ 			var id = this.getId();
+ 			var domId = "#"+id;
+ 			$(domId).draggable({
+ 				cursor: 'move',
+ 				helper: "clone"
+ 			});
+ 			$(domId).droppable({
+ 				hoverClass: "dndHover",
+ 				drop: function (event, ui) {
+ 					var draggableId = ui.draggable.attr("id");
+ 					var droppableId = $(this).attr("id");
+ 					that.fireDrop({
+ 						source: sap.ui.getCore().byId(draggableId),
+ 						target: sap.ui.getCore().byId(droppableId)
+ 					});
+ 				}
+ 			});
+ 			$(domId).on('dragstart', function (event) {
+ 				that.fireDragStart();
+ 				that.addStyleClass('dndAvatarOnDrag');
+ 			});
+ 			$(domId).on('dragstop', function (event) {
+ 				that.fireDragEnd();
+ 				that.removeStyleClass('dndAvatarOnDrag');
  			});
  		};
-
  		return dndAvatar;
-
  	},
  	true);

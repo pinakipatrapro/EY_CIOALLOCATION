@@ -6,10 +6,14 @@
 			
 			<HBox  justifyContent="Center" class="sapUiSmallMarginTop">
 				<Text text="Select allocation type : " class="sapUiTinyMargin" />
-				<Select>
-					<core:Item text="Actuals"/>
+				<Select change="onAllocationTypeChange">
+					<core:Item text="Actual"/>
 					<core:Item text="Budget"/>
 				</Select>
+			</HBox>
+			<HBox  justifyContent="Center" class="sapUiSmallMarginTop">
+				<Text text="Select allocation date : " class="sapUiTinyMargin" />
+				<DatePicker id="allocationDate" valueFormat="yyyy-MM" displayFormat="yyyy-MM"/>
 			</HBox>
 			<HBox alignItems="Center" justifyContent="Center" class="sapUiMediumMarginTop" items="{path:'/addAllocationMapingData/map'}">
 				<ext:DnDAvatar text="{name}" icon="{icon}" dragStart="handleOnDragStart" dragEnd="handleOnDragEnd" drop="handleDrop" visible="{visible}"
