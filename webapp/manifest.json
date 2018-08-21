@@ -45,9 +45,9 @@
 		"dependencies": {
 			"minUI5Version": "1.30.0",
 			"libs": {
-				"sap.ui.layout": {},
+				"sap.m": {},
 				"sap.ui.core": {},
-				"sap.m": {}
+				"sap.ui.layout": {}
 			}
 		},
 		"contentDensities": {
@@ -66,9 +66,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -80,19 +82,22 @@
 				"controlId": "idToolPageApp",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "Welcome",
-				"pattern": "",
-				"target": [
-					"Welcome"
-				]
-			}, {
-				"name": "CreateAllocation",
-				"pattern": "CreateAllocation",
-				"target": [
-					"CreateAllocation"
-				]
-			}],
+			"routes": [
+				{
+					"name": "Welcome",
+					"pattern": "",
+					"target": [
+						"Welcome"
+					]
+				},
+				{
+					"name": "CreateAllocation",
+					"pattern": "CreateAllocation",
+					"target": [
+						"CreateAllocation"
+					]
+				}
+			],
 			"targets": {
 				"Welcome": {
 					"viewType": "XML",

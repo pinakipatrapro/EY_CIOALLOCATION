@@ -1,6 +1,8 @@
  sap.ui.define([
- 		'sap/m/VBox'
- 	], function (VBox) {
+ 		'sap/m/VBox',
+ 		'./DragInfo',
+ 		'./DropInfo'
+ 	], function (VBox, DragInfo, DropInfo) {
  		"use strict";
 
  		// Control extension
@@ -15,6 +17,14 @@
  					},
  					icon: {
  						type: "string"
+ 					}
+ 				},
+ 				aggregations: {
+ 					dragDropConfig: {
+ 						name: "dragDropConfig",
+ 						type: "sap.ui.core.dnd.DragDropBase",
+ 						multiple: true,
+ 						singularName: "dragDropConfig"
  					}
  				},
  				events: {
@@ -53,7 +63,7 @@
  				}).addStyleClass('sapUiTinyMargin').addStyleClass('whiteText')
  			);
  			this.setAlignItems('Center');
- 			this.addDragDropConfig(new sap.ui.core.dnd.DragInfo({
+ 			this.addDragDropConfig(new DragInfo({
  				dragStart: function () {
  					that.fireDragStart({});
  				},
@@ -61,7 +71,7 @@
  					that.fireDragEnd({});
  				}
  			}));
- 			this.addDragDropConfig(new sap.ui.core.dnd.DropInfo({
+ 			this.addDragDropConfig(new DropInfo({
  				drop: function (evt) {
  					that.fireDrop({
  						dndEvent: evt
