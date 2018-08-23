@@ -39,7 +39,11 @@ sap.ui.define([
 			this.getView().getModel().setProperty('/addAllocationMapingData', Constants);
 		},
 		handleDrop : function(oEvent){
-			alert();
+			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			oRouter.navTo("CreateAllocationDetail", {
+				source: oEvent.getParameter('source').getBindingContext().getProperty('id'),
+				target: oEvent.getParameter('target').getBindingContext().getProperty('id')
+			});
 		},
 		onAllocationTypeChange : function(oEvent){
 			var type = oEvent.getParameter('selectedItem').getProperty('text');

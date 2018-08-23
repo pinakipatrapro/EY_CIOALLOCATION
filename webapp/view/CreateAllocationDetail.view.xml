@@ -1,0 +1,26 @@
+<mvc:View controllerName="pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationDetail"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns="sap.suite.ui.commons.networkgraph"
+	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:m="sap.m">
+	<m:Page title="{i18n>createAllocation}" floatingFooter="true">
+		<Graph id='mainAllocationGraph' nodes="{/allocationGraph/nodes}" lines="{/allocationGraph/lines}" groups="{/allocationGraph/groups}">
+			<nodes>
+				<Node key="{key}" title="{title}" group="{group}" status="{status}" showDetailButton="false" showActionLinksButton="false">
+					<actionButtons>
+						<ActionButton icon="sap-icon://edit"/>
+						<ActionButton icon="sap-icon://add" press="openNodeAdditionDialog"/>
+						<ActionButton icon="sap-icon://delete"/>
+					</actionButtons>
+					<image>
+						<NodeImage src="{icon}"/>
+					</image>
+				</Node>
+			</nodes>
+			<lines>
+				<Line from="{from}" to="{to}"></Line>
+			</lines>
+			<groups>
+				<Group key="{key}" title="{title}" ></Group>
+			</groups>
+		</Graph>
+	</m:Page>
+</mvc:View>

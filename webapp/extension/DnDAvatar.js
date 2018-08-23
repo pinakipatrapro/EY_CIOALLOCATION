@@ -71,7 +71,7 @@
  				helper: "clone"
  			});
  			$(domId).droppable({
- 				hoverClass: "dndHover",
+ 				// hoverClass: "dndHover",
  				drop: function (event, ui) {
  					var draggableId = ui.draggable.attr("id");
  					var droppableId = $(this).attr("id");

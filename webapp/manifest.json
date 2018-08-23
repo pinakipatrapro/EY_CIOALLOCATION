@@ -96,6 +96,13 @@
 					"target": [
 						"CreateAllocation"
 					]
+				},
+				{
+					"name": "CreateAllocationDetail",
+					"pattern": "CreateAllocationDetail/{source}/{target}",
+					"target": [
+						"CreateAllocationDetail"
+					]
 				}
 			],
 			"targets": {
@@ -110,6 +117,12 @@
 					"transition": "slide",
 					"clearControlAggregation": false,
 					"viewName": "CreateAllocation"
+				},
+				"CreateAllocationDetail": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewName": "CreateAllocationDetail"
 				}
 			}
 		}
