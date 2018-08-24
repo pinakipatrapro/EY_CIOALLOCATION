@@ -2,43 +2,32 @@ sap.ui.define([], function () {
 	"use strict";
 	return {
 		map: [{
-			"name": "Cost Pool",
-			"id": "CP",
-			"visible":true,
-			"selfMap":false,
-			"icon": "sap-icon://capital-projects",
-			"mapTo": ["ITS", "BS","CP"]
+			"name": "Cost Pool to IT Service",
+			"id": "CPIT",
+			"selectVisible" : true,
+			"icon": "sap-icon://capital-projects"
 		}, {
-			"name": "IT Service",
-			"id": "ITS",
-			"visible":true,
-			"selfMap":true,
-			"icon":"sap-icon://it-system",
-			"mapTo": ["ITS", "BS","ITSG"]
+			"name": "Cost Pool to Business Service",
+			"id": "BPBS",
+			"selectVisible" : true,
+			"icon":"sap-icon://it-system"
 		},
 		{
-			"name": "IT Service",
-			"id": "ITSG",
-			"visible":false,
-			"selfMap":false,
-			"ghost":true,
-			"icon":"sap-icon://it-system",
-			"mapTo": ["ITSG"]
+			"name": "IT Service to IT Service",
+			"id": "ITIT",
+			"selectVisible" : false,
+			"icon":"sap-icon://it-system"
 		},
 		{
-			"name": "Business Service",
+			"name": "IT Service to Business Service",
 			"icon":"sap-icon://official-service",
-			"id": "BS",
-			"visible":true,
-			"selfMap":false,
-			"mapTo": ["B","BS"]
+			"id": "ITBS",
+			"selectVisible" : false
 		}, {
-			"name": "Business",
+			"name": "Business Service to Business",
+			"selectVisible" : false,
 			"icon":"sap-icon://business-one",
-			"id": "B",
-			"selfMap":false,
-			"visible":true,
-			"mapTo": ["B"]
+			"id": "BSB"
 		}]
 	};
 

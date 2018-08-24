@@ -14,18 +14,27 @@
     padding-top: 1rem;
     font-size: 3rem;
 }
-.hideElement{
-	visibility:hidden;
+
+.hideElement {
+    visibility: hidden;
 }
 
-.dndAvatarOnDrag{
-	visibility: hidden;
+.dndAvatarOnDrag {
+    visibility: hidden;
 }
-.dndHover{
-	background: #2b7d2ba6;
+
+.dndHover {
+    background: #2b7d2ba6;
     border: 3px solid #3f5161;
 }
-.dndHoverActive{
-	background: #2b7d2b;
+
+.dndHoverActive {
+    background: #2b7d2b;
     border: 3px solid #3f5161;
+}
+
+.vboxBorder {
+    border: 1px solid #7c9cb8;
+    border-radius: 10px;
+    background: #eff4f9;
 }

@@ -1,29 +1,14 @@
 <mvc:View controllerName="pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocation" xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:ext="pinaki.ey.CIO.allocation.CIOAllocation.extension" xmlns:mvc="sap.ui.core.mvc"
-	displayBlock="true" xmlns="sap.m">
+	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m">
 	<Page title="{i18n>createAllocation}" floatingFooter="true">
 		<content>
-			
-			<HBox  justifyContent="Center" class="sapUiSmallMarginTop">
-				<Text text="Select allocation type : " class="sapUiTinyMargin" />
-				<Select change="onAllocationTypeChange">
-					<core:Item text="Actual"/>
-					<core:Item text="Budget"/>
-				</Select>
-			</HBox>
-			<HBox  justifyContent="Center" class="sapUiSmallMarginTop">
-				<Text text="Select allocation date : " class="sapUiTinyMargin" />
-				<DatePicker id="allocationDate" valueFormat="yyyy-MM" displayFormat="yyyy-MM"/>
-			</HBox>
-			<HBox alignItems="Center" justifyContent="Center" class="sapUiMediumMarginTop" items="{path:'/addAllocationMapingData/map'}">
-				<ext:DnDAvatar text="{name}" icon="{icon}" dragStart="handleOnDragStart" dragEnd="handleOnDragEnd" drop="handleDrop" visible="{visible}"
-					selfMap="{selfMap}"/>
-			</HBox>
-			<VBox alignItems="Center">
-				<core:Icon src="sap-icon://journey-depart" size="8rem" color="#b8cee4"/>
-				<Text text="Drag and Drop elements to create allocatios"/>
-			</VBox>
-			
+			<l:Grid content="{path:'/addAllocationMapingData/map'}" class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L4 M6 S10">
+				<VBox alignItems="Center" class="sapUiTinyMargin vboxBorder">
+					<Label text="{name}" design="Bold" class="sapUiTinyMargin"/>
+					<Text text="Create allocation from {name}" maxLines="3" class="sapUiTinyMargin"/>
+					<Button press="navToCostAllocDetails" text="Continue" icon="sap-icon://open-command-field" type="Transparent" class="sapUiTinyMargin"/>
+				</VBox>
+			</l:Grid>
 		</content>
 		<footer>
 			<OverflowToolbar>

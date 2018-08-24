@@ -8,53 +8,41 @@ sap.ui.define([
 		onAfterRendering: function () {
 			this.getView().getModel().setProperty('/addAllocationMapingData', Constants);
 		},
-		handleOnDragStart: function (oEvent) {
-			var mapTo = oEvent.getSource().getBindingContext().getProperty("mapTo");
-			this.hideUnmappedAvatars(mapTo, false);
-		},
-		hideUnmappedAvatars: function (mapTo, visible) {
-			var map = this.getView().getModel().getProperty('/addAllocationMapingData').map;
-			map.forEach(function (e) {
-				if (mapTo.indexOf(e["id"]) < 0) {
-					e["visible"] = visible;
-				}else if(e["ghost"] === true){
-					e["visible"] = true;
-				}
-			});
-			this.getView().getModel().setProperty('/addAllocationMapingData', {
-				map: map
-			});
-		},
-		handleOnDragEnd: function (oEvent) {
-			var map = this.getView().getModel().getProperty('/addAllocationMapingData').map;
-			map.forEach(function (e) {
-				e["visible"] = true;
-				if(e["ghost"] === true){
-					e["visible"] = false;
-				}
-			});
-			this.getView().getModel().setProperty('/addAllocationMapingData', {
-				map: map
-			});
-			this.getView().getModel().setProperty('/addAllocationMapingData', Constants);
-		},
-		handleDrop : function(oEvent){
+		navToCostAllocDetails: function (oEvent) {
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			var selection = oEvent.getSource().getBindingContext().getProperty('selectVisible');
+
 			oRouter.navTo("CreateAllocationDetail", {
-				source: oEvent.getParameter('source').getBindingContext().getProperty('id'),
-				target: oEvent.getParameter('target').getBindingContext().getProperty('id')
+				id: oEvent.getSource().getBindingContext().getProperty('id')
 			});
+
+			setTimeout(function () {
+				if (selection) {
+					this.openCostPoolSelectionDialog();
+				}
+			}.bind(this), 100);
+
 		},
-		onAllocationTypeChange : function(oEvent){
-			var type = oEvent.getParameter('selectedItem').getProperty('text');
-			var allocationDate = this.getView().byId('allocationDate');
-			if(type =="Actual"){
-				allocationDate.setValueFormat('yyyy-MM');
-				allocationDate.setDisplayFormat('yyyy-MM');
-			}else{
-				allocationDate.setValueFormat('yyyy');
-				allocationDate.setDisplayFormat('yyyy');
-			}
+		openCostPoolSelectionDialog: function () {
+			var that  = this;
+			new sap.m.Dialog({
+				headerText : "Select Cost Pool",
+				title : "Select Cost Pool",
+				content : [
+					new sap.m.Select({
+						width : '100%',
+						items : [
+							new sap.ui.core.Item({text:"Internal Labour",key:"IL"}),
+							new sap.ui.core.Item({text:"External Labour",key:"EL"})
+						],
+						change : function(oEvent){
+							that.getView().getModel().setProperty('/selectedCostPool', oEvent.getSource().getSelectedKey());
+							oEvent.getSource().getParent().close();
+						}
+					})
+				]
+			}).open();
 		}
+
 	});
 });

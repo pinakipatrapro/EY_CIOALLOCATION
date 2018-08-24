@@ -99,7 +99,7 @@
 				},
 				{
 					"name": "CreateAllocationDetail",
-					"pattern": "CreateAllocationDetail/{source}/{target}",
+					"pattern": "CreateAllocationDetail/{id}",
 					"target": [
 						"CreateAllocationDetail"
 					]
