@@ -5,7 +5,7 @@
 		<content>
 			<l:Splitter height="700px">
 				<Panel>
-					<List mode="MultiSelect">
+					<List mode="MultiSelect"> 
 						<CustomListItem type="Active">
 							<Button type="Transparent" text="Cost C 1" class="sapUiTinyMargin"></Button>
 							<Button type="Transparent" text="Cost C 1" class="sapUiTinyMargin"></Button>
