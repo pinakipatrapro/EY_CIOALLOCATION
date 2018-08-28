@@ -3,46 +3,51 @@
 	xmlns="sap.m">
 	<Page title="{i18n>createAllocation}" floatingFooter="true">
 		<content>
-			<l:Splitter height="700px">
-				<Panel>
-					<List mode="MultiSelect"> 
-						<CustomListItem type="Active">
-							<Button type="Transparent" text="Cost C 1" class="sapUiTinyMargin"></Button>
-							<Button type="Transparent" text="Cost C 1" class="sapUiTinyMargin"></Button>
-							<Button type="Transparent" text="Cost C 1" class="sapUiTinyMargin"></Button>
-							<ComboBox class="sapUiTinyMargin"/>
-						</CustomListItem>
-						<CustomListItem>
-							<Token text="Cost C 1"></Token>
-							<Token text="Cost C 1.1"></Token>
-							<Token text="Cost C 1.1.2"></Token>
-							<Input width="10rem"/>
-						</CustomListItem>
+			<ObjectHeader
+				binding="{/ProductCollection/0}"
+				title="Cost Pool to IT Service"
+				number="23100"
+				numberUnit="EUR" >
+				<statuses>
+					<ProgressIndicator
+						percentValue="46"
+						state="Error" />
+				</statuses>
+				<attributes>
+					<ObjectAttribute title="Total Amount to allocate" text="5000" />
+					<ObjectAttribute title="Total Amount  allocated" text="2300" />
+					<ObjectAttribute title="Allocated %" text="46%" />
+				</attributes>
+			</ObjectHeader>
+			<l:Splitter height="700px" class="sapUiSizeCompact ">
+				 <Panel>
+				 	<headerToolbar>
+						<Toolbar>
+							<Text text="Cost Center" />
+							<ToolbarSpacer/>
+							<Text text="3210 EUR"/>
+						</Toolbar>
+					</headerToolbar>
+					<List mode="SingleSelectMaster">
+						<DisplayListItem
+							label="Internal Labour"
+							value="2134 Eur"
+							type="Navigation"
+						/>
+						<DisplayListItem
+							label="External Labour"
+							value="7034 Eur"
+							type="Navigation"
+						/>
 					</List>
-				</Panel>
-				<Panel>
-					<l:Splitter height="700px">
-						<List mode="MultiSelect">
-							<CustomListItem type="Active">
-								<Button type="Transparent" text="Cost C 1" class="sapUiTinyMargin"></Button>
-								<Input width="5rem" class="sapUiTinyMargin"/>
-							</CustomListItem>
-						</List>
-						<List mode="MultiSelect">
-							<CustomListItem type="Active">
-								<Button type="Transparent" text="Cost C 1" class="sapUiTinyMargin"></Button>
-								<Input width="5rem" class="sapUiTinyMargin"/>
-							</CustomListItem>
-						</List>
-						<List mode="MultiSelect">
-							<CustomListItem type="Active">
-								<Button type="Transparent" text="Cost C 1" class="sapUiTinyMargin"></Button>
-								<Input width="5rem" class="sapUiTinyMargin"/>
-							</CustomListItem>
-						</List>
-					</l:Splitter>
-				</Panel>
+				 </Panel>
+				 <VBox />
+				 <VBox />
+				 <VBox />
 			</l:Splitter>
 		</content>
+		<footer>
+			<Toolbar/>
+		</footer>
 	</Page>
 </mvc:View>
