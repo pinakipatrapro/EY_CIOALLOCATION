@@ -16,7 +16,7 @@
 				<attributes>
 					<ObjectAttribute title="Total Amount to allocate" text="5000" />
 					<ObjectAttribute title="Total Amount  allocated" text="2300" />
-					<ObjectAttribute title="Allocated %" text="46%" />
+					<ObjectAttribute title="Allocated Percentage" text="46%" />
 				</attributes>
 			</ObjectHeader>
 			<l:Splitter height="700px" class="sapUiSizeCompact ">
@@ -41,7 +41,24 @@
 						/>
 					</List>
 				 </Panel>
-				 <VBox />
+				 <Panel>
+				 	<headerToolbar>
+						<Toolbar>
+							<Text text="IT Service Tower" />
+							<ToolbarSpacer/>
+							<Text text="44%" status="Error"/>
+						</Toolbar>
+					</headerToolbar>
+					<List mode="SingleSelectMaster">
+						<InputListItem label="Server">
+							<Input
+								width="4rem"
+								placeholder="Price"
+								value="799"
+								type="Number" />
+						</InputListItem>
+					</List>
+				 </Panel>
 				 <VBox />
 				 <VBox />
 			</l:Splitter>
