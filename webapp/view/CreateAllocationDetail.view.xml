@@ -1,11 +1,11 @@
 <mvc:View controllerName="pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationDetail" xmlns:l="sap.ui.layout"
 	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
 	xmlns="sap.m">
-	<Page title="{i18n>createAllocation}" floatingFooter="true">
+	<Page title="{description}" floatingFooter="true">
 		<content>
 			<ObjectHeader
-				binding="{/ProductCollection/0}"
-				title="Cost Pool to IT Service"
+				title="{child/0/name}"
+				showTitleSelector="true"
 				number="23100"
 				numberUnit="EUR" >
 				<statuses>
@@ -19,48 +19,75 @@
 					<ObjectAttribute title="Allocated Percentage" text="46%" />
 				</attributes>
 			</ObjectHeader>
-			<l:Splitter height="700px" class="sapUiSizeCompact ">
+			<l:Splitter height="700px" class="sapUiSizeCompact" binding="{child/0/}">
 				 <Panel>
 				 	<headerToolbar>
 						<Toolbar>
-							<Text text="Cost Center" />
+							<Text text="{child/0/level}" />
 							<ToolbarSpacer/>
-							<Text text="3210 EUR"/>
+							<Text text="{childSum} / {value}"/>
 						</Toolbar>
 					</headerToolbar>
-					<List mode="SingleSelectMaster">
+					<List mode="SingleSelectMaster" items="{path:'child/'}">
 						<DisplayListItem
-							label="Internal Labour"
-							value="2134 Eur"
+							label="{name}"
+							value="{value}"
 							type="Navigation"
 						/>
-						<DisplayListItem
-							label="External Labour"
-							value="7034 Eur"
-							type="Navigation"
-						/>
+						
 					</List>
 				 </Panel>
-				 <Panel>
+				 <Panel binding="{child/0/}" >
 				 	<headerToolbar>
 						<Toolbar>
-							<Text text="IT Service Tower" />
+							<Text text="{child/0/level}" />
 							<ToolbarSpacer/>
-							<Text text="44%" status="Error"/>
+							<Text text="{childSum} / {value}"/>
 						</Toolbar>
 					</headerToolbar>
-					<List mode="SingleSelectMaster">
-						<InputListItem label="Server">
+					<List mode="SingleSelectMaster" items="{path:'child/'}">
+						<InputListItem label="{name}" type="Navigation">
 							<Input
 								width="4rem"
-								placeholder="Price"
-								value="799"
+								value="{value}"
 								type="Number" />
 						</InputListItem>
 					</List>
 				 </Panel>
-				 <VBox />
-				 <VBox />
+				  <Panel binding="{child/0/child/0/}" >
+				 	<headerToolbar>
+						<Toolbar>
+							<Text text="{child/0/level}" />
+							<ToolbarSpacer/>
+							<Text text="{childSum} / {value}"/>
+						</Toolbar>
+					</headerToolbar>
+					<List mode="SingleSelectMaster" items="{path:'child/'}">
+						<InputListItem label="{name}" type="Navigation">
+							<Input
+								width="4rem"
+								value="{value}"
+								type="Number" />
+						</InputListItem>
+					</List>
+				 </Panel>
+				  <Panel binding="{child/0/child/0/child/0/}" >
+				 	<headerToolbar>
+						<Toolbar>
+							<Text text="{child/0/level}" />
+							<ToolbarSpacer/>
+							<Text text="{childSum} / {value}"/>
+						</Toolbar>
+					</headerToolbar>
+					<List mode="SingleSelectMaster" items="{path:'child/'}">
+						<InputListItem label="{name}">
+							<Input
+								width="4rem"
+								value="{value}"
+								type="Number" />
+						</InputListItem>
+					</List>
+				 </Panel>
 			</l:Splitter>
 		</content>
 		<footer>

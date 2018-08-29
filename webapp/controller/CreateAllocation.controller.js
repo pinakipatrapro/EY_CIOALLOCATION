@@ -15,33 +15,6 @@ sap.ui.define([
 			oRouter.navTo("CreateAllocationDetail", {
 				id: oEvent.getSource().getBindingContext().getProperty('id')
 			});
-
-			setTimeout(function () {
-				if (selection) {
-					this.openCostPoolSelectionDialog();
-				}
-			}.bind(this), 100);
-
-		},
-		openCostPoolSelectionDialog: function () {
-			var that  = this;
-			new sap.m.Dialog({
-				headerText : "Select Cost Pool",
-				title : "Select Cost Pool",
-				content : [
-					new sap.m.Select({
-						width : '100%',
-						items : [
-							new sap.ui.core.Item({text:"Internal Labour",key:"IL"}),
-							new sap.ui.core.Item({text:"External Labour",key:"EL"})
-						],
-						change : function(oEvent){
-							that.getView().getModel().setProperty('/selectedCostPool', oEvent.getSource().getSelectedKey());
-							oEvent.getSource().getParent().close();
-						}
-					})
-				]
-			}).open();
 		}
 
 	});
