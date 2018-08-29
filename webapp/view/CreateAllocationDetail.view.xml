@@ -25,6 +25,7 @@
 						<Toolbar>
 							<Text text="{child/0/level}" />
 							<ToolbarSpacer/>
+							<ProgressIndicator width="4rem" percentValue="74"/>
 							<Text text="{childSum} / {value}"/>
 						</Toolbar>
 					</headerToolbar>
