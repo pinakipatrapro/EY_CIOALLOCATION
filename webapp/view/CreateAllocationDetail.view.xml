@@ -1,25 +1,29 @@
 <mvc:View controllerName="pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationDetail" xmlns:l="sap.ui.layout"
 	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
 	xmlns="sap.m">
-	<Page title="{description}" floatingFooter="true">
+	<Page title="{currentPathDesc}" floatingFooter="true">
 		<content>
-			<ObjectHeader
-				title="{child/0/name}"
+			<ObjectHeader  
+				id="idObjectHeader"
+				binding="{0/}"
+				titleSelectorPress="openCostPoolSelection"
+				title="Cost Pool : {name}"
 				showTitleSelector="true"
-				number="23100"
+				number="{value}"
 				numberUnit="EUR" >
 				<statuses>
 					<ProgressIndicator
-						percentValue="46"
-						state="Error" />
+						percentValue="{= ${childSum}/${value}}"
+						displayValue="{childSum} of {value}"
+					/>
 				</statuses>
 				<attributes>
-					<ObjectAttribute title="Total Amount to allocate" text="5000" />
-					<ObjectAttribute title="Total Amount  allocated" text="2300" />
-					<ObjectAttribute title="Allocated Percentage" text="46%" />
+					<ObjectAttribute title="Total Amount to allocate" text="{value}" />
+					<ObjectAttribute title="Total Amount  allocated" text="{childSum}" />
+					<ObjectAttribute title="Allocated Percentage" text="{= ${childSum}/${value}}" />
 				</attributes>
 			</ObjectHeader>
-			<l:Splitter height="700px" class="sapUiSizeCompact" binding="{child/0/}">
+			<l:Splitter id='idParentSplitter' height="700px" class="sapUiSizeCompact" binding="{0/}">
 				 <Panel>
 				 	<headerToolbar>
 						<Toolbar>
@@ -29,7 +33,7 @@
 							<Text text="{childSum} / {value}"/>
 						</Toolbar>
 					</headerToolbar>
-					<List mode="SingleSelectMaster" items="{path:'child/'}">
+					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
 						<DisplayListItem
 							label="{name}"
 							value="{value}"
@@ -38,7 +42,7 @@
 						
 					</List>
 				 </Panel>
-				 <Panel binding="{child/0/}" >
+				 <Panel visible="false" binding="{child/0/}" >
 				 	<headerToolbar>
 						<Toolbar>
 							<Text text="{child/0/level}" />
@@ -46,16 +50,17 @@
 							<Text text="{childSum} / {value}"/>
 						</Toolbar>
 					</headerToolbar>
-					<List mode="SingleSelectMaster" items="{path:'child/'}">
+					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
 						<InputListItem label="{name}" type="Navigation">
 							<Input
+								change="onValueChange"
 								width="4rem"
 								value="{value}"
 								type="Number" />
 						</InputListItem>
 					</List>
 				 </Panel>
-				  <Panel binding="{child/0/child/0/}" >
+				  <Panel visible="false" binding="{child/0/child/0/}" >
 				 	<headerToolbar>
 						<Toolbar>
 							<Text text="{child/0/level}" />
@@ -63,16 +68,17 @@
 							<Text text="{childSum} / {value}"/>
 						</Toolbar>
 					</headerToolbar>
-					<List mode="SingleSelectMaster" items="{path:'child/'}">
+					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
 						<InputListItem label="{name}" type="Navigation">
 							<Input
+								change="onValueChange"
 								width="4rem"
 								value="{value}"
 								type="Number" />
 						</InputListItem>
 					</List>
 				 </Panel>
-				  <Panel binding="{child/0/child/0/child/0/}" >
+				  <Panel  visible="false" binding="{child/0/child/0/child/0/}" >
 				 	<headerToolbar>
 						<Toolbar>
 							<Text text="{child/0/level}" />
@@ -80,9 +86,10 @@
 							<Text text="{childSum} / {value}"/>
 						</Toolbar>
 					</headerToolbar>
-					<List mode="SingleSelectMaster" items="{path:'child/'}">
+					<List  items="{path:'child/'}"  >
 						<InputListItem label="{name}">
 							<Input
+								change="onValueChange"
 								width="4rem"
 								value="{value}"
 								type="Number" />

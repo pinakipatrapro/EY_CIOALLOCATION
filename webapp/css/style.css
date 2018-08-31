@@ -7,7 +7,7 @@
 }
 
 .whiteText {
-    color: #fafafa;
+    color: #fafafa; 
 }
 
 .avatarIconSize {
@@ -39,6 +39,6 @@
     background: #eff4f9;
 }
 
-.panelBorder{
-    
+.sapMLIB.sapMLIBSelected {
+    background: rgb(189, 210, 230);
 }
