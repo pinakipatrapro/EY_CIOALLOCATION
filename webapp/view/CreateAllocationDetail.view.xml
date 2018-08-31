@@ -13,14 +13,15 @@
 				numberUnit="EUR" >
 				<statuses>
 					<ProgressIndicator
-						percentValue="{= ${childSum}/${value}}"
-						displayValue="{childSum} of {value}"
+						percentValue="{= ${childSum}/${value}*100}"
+						displayValue="{childSum} of {value} allocated for {name}"
+						state="{= ${childSum} === ${value}?'Success':'Warning' }"
 					/>
 				</statuses>
 				<attributes>
 					<ObjectAttribute title="Total Amount to allocate" text="{value}" />
 					<ObjectAttribute title="Total Amount  allocated" text="{childSum}" />
-					<ObjectAttribute title="Allocated Percentage" text="{= ${childSum}/${value}}" />
+					<ObjectAttribute title="Allocated Percentage" text="{= ${childSum}/${value}*100}" />
 				</attributes>
 			</ObjectHeader>
 			<l:Splitter id='idParentSplitter' height="700px" class="sapUiSizeCompact" binding="{0/}">
@@ -29,8 +30,10 @@
 						<Toolbar>
 							<Text text="{child/0/level}" />
 							<ToolbarSpacer/>
-							<ProgressIndicator width="4rem" percentValue="74"/>
-							<Text text="{childSum} / {value}"/>
+							<ProgressIndicator   height=".3rem" percentValue="{= ${childSum}/${value}*100}"
+								displayValue=" {childSum} of {value} "
+								state="{= ${childSum} === ${value}?'Success':'Warning' }"
+							/>
 						</Toolbar>
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
@@ -47,7 +50,10 @@
 						<Toolbar>
 							<Text text="{child/0/level}" />
 							<ToolbarSpacer/>
-							<Text text="{childSum} / {value}"/>
+							<ProgressIndicator  height=".3rem" percentValue="{= ${childSum}/${value}*100}"
+								displayValue=" {childSum} of {value} "
+								state="{= ${childSum} === ${value}?'Success':'Warning' }"
+							/>
 						</Toolbar>
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
@@ -65,7 +71,10 @@
 						<Toolbar>
 							<Text text="{child/0/level}" />
 							<ToolbarSpacer/>
-							<Text text="{childSum} / {value}"/>
+							<ProgressIndicator  height=".3rem" percentValue="{= ${childSum}/${value}*100}"
+								displayValue=" {childSum} of {value} "
+								state="{= ${childSum} === ${value}?'Success':'Warning' }"
+							/>
 						</Toolbar>
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
@@ -83,7 +92,10 @@
 						<Toolbar>
 							<Text text="{child/0/level}" />
 							<ToolbarSpacer/>
-							<Text text="{childSum} / {value}"/>
+						<ProgressIndicator  height=".3rem" percentValue="{= ${childSum}/${value}*100}"
+								displayValue=" {childSum} of {value} "
+								state="{= ${childSum} === ${value}?'Success':'Warning' }"
+							/>
 						</Toolbar>
 					</headerToolbar>
 					<List  items="{path:'child/'}"  >

@@ -14,13 +14,18 @@ sap.ui.define([
 		},
 		_onRouteMatched: function (oEvent) {
 			routeData.id = oEvent.getParameter("arguments").id;
-			this.getView().getModel().setData({
-				allocationData: {
-					CPIT: null,
-					currentPathDesc: ''
-				}
-			}, true);
-			this.setData();
+			if (
+				this.getView().getModel().getProperty('/allocationData/editingCompleted') === null ||
+				this.getView().getModel().getProperty('/allocationData/editingCompleted') === undefined
+				) {
+				this.getView().getModel().setData({
+					allocationData: {
+						CPIT: null,
+						currentPathDesc: ''
+					}
+				}, true);
+				this.setData();
+			}
 		},
 		setData: function () {
 			this.loadApi(this.getView().getModel());
@@ -31,6 +36,7 @@ sap.ui.define([
 				var CPITDataModel = new CPIT();
 				CPITDataModel.loadInitialData().then(function (data) {
 					this.getView().getModel().setProperty('/allocationData/CPIT', data);
+					this.getView().getModel().setProperty('/allocationData/editingCompleted', false);
 					this.getView().getModel().setProperty('/allocationData/CPIT/currentPathDesc', 'Map Cost Pool to IT Services');
 				}.bind(this));
 			}
@@ -100,37 +106,55 @@ sap.ui.define([
 		},
 		onValueChange: function (oEvent) {
 			var changedValue = oEvent.getParameter('value');
+			changedValue.length == 0 ? changedValue = 0 : '';
 			var path = oEvent.getSource().getBindingContext().sPath;
 			var reachedTop = false;
 			var model = this.getView().getModel();
+			var currentObject = model.getProperty(path);
+			currentObject.value = parseFloat(changedValue);
 
-			for (var i = 0; !reachedTop; i++) {
-				//GetPeers
-				var aContexts = path.split('/');
-				aContexts.pop();
-				path = aContexts.join('/');
-				var peerData = model.getProperty(path);
-				var sum = 0;
-				peerData.forEach(function (e) {
-					sum = sum + parseFloat(e.childSum);
-				});
+			if (currentObject["previousValue"] == undefined) {
+				currentObject["previousValue"] = 0;
+			}
 
-				//Get Parent
-				aContexts.pop();
-				path = aContexts.join('/');
+			//Get Parent
+			var aContexts = path.split('/');
+			aContexts.pop();
+			aContexts.pop();
+			path = aContexts.join('/');
 
-				var parentObject = model.getProperty(path);
-				if (parentObject.childSum !== undefined) {
-
-					if (sum > parentObject.value) {
-						sap.m.MessageToast.show('Error : Sum of value cannot be greater than the total allocated values');
-						parentObject["state"] = "Error";
-					} else {
-						parentObject.childSum = sum;
-					}
-				}else{
-					reachedTop = true;
+			var parentObject = model.getProperty(path);
+			if (parentObject.childSum !== undefined) {
+				var sum = parseFloat(parentObject.childSum) + parseFloat(changedValue) - parseFloat(currentObject["previousValue"]);
+				if (sum > parentObject.value) {
+					sap.m.MessageToast.show('Error : Sum of value cannot be greater than the total allocated values');
+					currentObject.value = currentObject["previousValue"];
+				} else {
+					parentObject.childSum = sum;
 				}
+			} else {
+				reachedTop = true;
+			}
+			currentObject["previousValue"] = currentObject.value.length == 0 ? 0 : currentObject.value;
+
+			// getSuperParent-Peers
+			var aContexts = path.split('/');
+			aContexts.pop();
+			path = aContexts.join('/');
+			var parentPeerSum = 0;
+
+			var aParentPeers = model.getProperty(path);
+			aParentPeers.forEach(function (e) {
+				parentPeerSum = parentPeerSum + e.childSum;
+			});
+
+			var aContexts = path.split('/');
+			aContexts.pop();
+			path = aContexts.join('/');
+
+			var aParentParent = model.getProperty(path);
+			if (aParentParent.level === 'Cost Pool') {
+				aParentParent.childSum = parentPeerSum;
 			}
 		}
 	});
