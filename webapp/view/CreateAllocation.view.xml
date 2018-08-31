@@ -2,6 +2,23 @@
 	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m">
 	<Page title="{i18n>createAllocation}" floatingFooter="true">
 		<content>
+			<VBox>
+				<HBox justifyContent="Center" class="sapUiSmallMarginTop">
+					<Text text="Select allocation type : " class="sapUiTinyMargin"/>
+					<Select change="onAllocationTypeChange" selectedKey="{/type}">
+						<core:Item text="Actual" key="A"/>
+						<core:Item text="Budget" key="B"/>
+					</Select>
+				</HBox>
+				<HBox justifyContent="Center" class="sapUiSmallMarginTop" visible="{= ${/type} === 'A'?true:false}">
+					<Text text="Select Month: " class="sapUiTinyMargin"/>
+					<DatePicker valueFormat="yyyy-MM" displayFormat="yyyy-MM" value="{/allocationYearMonth}"/>
+				</HBox>
+				<HBox justifyContent="Center" class="sapUiSmallMarginTop" visible="{= ${/type} === 'B'?true:false}">
+					<Text text="Select Year : " class="sapUiTinyMargin"/>
+					<DatePicker valueFormat="yyyy" displayFormat="yyyy" value="{/budgetYearMonth}"/>
+				</HBox>
+			</VBox>
 			<l:Grid content="{path:'/addAllocationMapingData/map'}" class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L4 M6 S10">
 				<VBox alignItems="Center" class="sapUiTinyMargin vboxBorder">
 					<Label text="{name}" design="Bold" class="sapUiTinyMargin"/>

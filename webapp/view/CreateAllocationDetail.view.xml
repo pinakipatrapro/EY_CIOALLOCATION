@@ -7,7 +7,7 @@
 				id="idObjectHeader"
 				binding="{0/}"
 				titleSelectorPress="openCostPoolSelection"
-				title="Cost Pool : {name}"
+				title="{levelName} : {name}"
 				showTitleSelector="true"
 				number="{value}"
 				numberUnit="EUR" >
@@ -38,6 +38,7 @@
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
 						<DisplayListItem
+							class="{= ${value}===${childValue}?'allocListItemSuccess','allocListItemError'}"
 							label="{name}"
 							value="{value}"
 							type="Navigation"

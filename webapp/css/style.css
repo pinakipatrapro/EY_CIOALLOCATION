@@ -7,7 +7,7 @@
 }
 
 .whiteText {
-    color: #fafafa; 
+    color: #fafafa;
 }
 
 .avatarIconSize {
@@ -41,4 +41,12 @@
 
 .sapMLIB.sapMLIBSelected {
     background: rgb(189, 210, 230);
+}
+
+.allocListItemError {
+    border-left: 5px solid #e78c07;
+}
+
+.allocListItemSuccess {
+    border-left: 5px solid #2b7c2b;
 }

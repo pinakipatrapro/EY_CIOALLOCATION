@@ -7,6 +7,11 @@ sap.ui.define([
 	return Controller.extend("pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocation", {
 		onAfterRendering: function () {
 			this.getView().getModel().setProperty('/addAllocationMapingData', Constants);
+			this.getView().getModel().setData({
+				type : "A",
+				allocationYearMonth : "",
+				budgetYearMonth : ""
+			},true);
 		},
 		navToCostAllocDetails: function (oEvent) {
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -16,6 +21,5 @@ sap.ui.define([
 				id: oEvent.getSource().getBindingContext().getProperty('id')
 			});
 		}
-
 	});
 });

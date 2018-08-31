@@ -9,36 +9,51 @@ sap.ui.define([
 	};
 	return Controller.extend("pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationDetail", {
 		onInit: function () {
+			setTimeout(function () {
+				this.getView().getModel().setData({
+					allocationData: {
+						CPIT: null,
+						ITIT: null,
+						currentPathDesc: ''
+					}
+				}, true);
+			}.bind(this), 0);
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 			oRouter.getRoute("CreateAllocationDetail").attachPatternMatched(this._onRouteMatched, this);
 		},
 		_onRouteMatched: function (oEvent) {
 			routeData.id = oEvent.getParameter("arguments").id;
-			if (
-				this.getView().getModel().getProperty('/allocationData/editingCompleted') === null ||
-				this.getView().getModel().getProperty('/allocationData/editingCompleted') === undefined
-				) {
-				this.getView().getModel().setData({
-					allocationData: {
-						CPIT: null,
-						currentPathDesc: ''
-					}
-				}, true);
-				this.setData();
-			}
+			this.setData();
 		},
 		setData: function () {
 			this.loadApi(this.getView().getModel());
 		},
 		loadApi: function () {
-			if (routeData.id === 'CPIT') {
+			if (routeData.id === 'CPIT' && !this.getView().getModel().getProperty('/allocationData/CPIT/editingCompleted')) {
 				this.getView().bindElement('/allocationData/CPIT');
-				var CPITDataModel = new CPIT();
-				CPITDataModel.loadInitialData().then(function (data) {
-					this.getView().getModel().setProperty('/allocationData/CPIT', data);
-					this.getView().getModel().setProperty('/allocationData/editingCompleted', false);
-					this.getView().getModel().setProperty('/allocationData/CPIT/currentPathDesc', 'Map Cost Pool to IT Services');
-				}.bind(this));
+				if (!this.getView().getModel().getProperty('/allocationData/CPIT/editingCompleted')) {
+					var CPITDataModel = new CPIT();
+					this.getView().setBusy(true);
+					CPITDataModel.loadInitialData().then(function (data) {
+						this.getView().setBusy(false);
+						this.getView().getModel().setProperty('/allocationData/CPIT', data);
+						this.getView().getModel().setProperty('/allocationData/CPIT/editingCompleted', false);
+						this.getView().getModel().setProperty('/allocationData/CPIT/currentPathDesc', 'Map Cost Pool to IT Services');
+					}.bind(this));
+				}
+			}
+			if (routeData.id === 'ITIT') {
+				this.getView().bindElement('/allocationData/ITIT');
+				if (!this.getView().getModel().getProperty('/allocationData/ITIT/editingCompleted')) {
+					var CPITDataModel = new CPIT();
+					this.getView().setBusy(true);
+					CPITDataModel.loadInitialData().then(function (data) {
+						this.getView().setBusy(false);
+						// this.getView().getModel().setProperty('/allocationData/ITIT', data);
+						this.getView().getModel().setProperty('/allocationData/ITIT/editingCompleted', false);
+						this.getView().getModel().setProperty('/allocationData/ITIT/currentPathDesc', 'Map IT Services to IT Services');
+					}.bind(this));
+				}
 			}
 		},
 		openCostPoolSelection: function (oEvent) {
