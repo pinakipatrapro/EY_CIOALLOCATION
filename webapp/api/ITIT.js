@@ -21,12 +21,12 @@ sap.ui.define([
 		this.updateAllocations = function () {
 			var dataFromCCtoITS = this._createITServiceExistingAllocation('raw');
 			var itServices = this._model.getData().allocationData.ITIT[0].child;
-			this._model.getData().allocationData.ITIT[0].childSum = 0;
+			this._model.getData().allocationData.ITIT[0].value	 = 0;
 			itServices.forEach(function (e, i) {
 				e.value = dataFromCCtoITS[i].value;
-				this._model.getData().allocationData.ITIT[0].childSum = this._model.getData().allocationData.ITIT[0].childSum + dataFromCCtoITS[i]
-					.value;
+				this._model.getData().allocationData.ITIT[0].value = this._model.getData().allocationData.ITIT[0].value + e.value;
 			}.bind(this));
+			this._model.refresh(); //It is required to asynchronously update the bindings
 		};
 		this.loadInitialData = function () {
 			return new Promise(function (res, rej) {

@@ -21,7 +21,7 @@
 				<attributes>
 					<ObjectAttribute title="Total Amount to allocate" text="{value}" />
 					<ObjectAttribute title="Total Amount  allocated" text="{childSum}" />
-					<ObjectAttribute title="Allocated Percentage" text="{= ${childSum}/${value}*100}" />
+					<ObjectAttribute title="Allocated Percentage" text="{= Math.round(${childSum}/${value}*10000)/100}" />
 				</attributes>
 			</ObjectHeader>
 			<l:Splitter id='idParentSplitter' height="600px" class="sapUiSizeCompact" binding="{0/}">
