@@ -5,18 +5,18 @@
 			<VBox>
 				<HBox justifyContent="Center" class="sapUiSmallMarginTop">
 					<Text text="Select allocation type : " class="sapUiTinyMargin"/>
-					<Select change="onAllocationTypeChange" selectedKey="{/type}">
+					<Select change="onAllocationTypeChange" selectedKey="{/type}" enabled="{/typeEnabled}">
 						<core:Item text="Actual" key="A"/>
 						<core:Item text="Budget" key="B"/>
 					</Select>
 				</HBox>
 				<HBox justifyContent="Center" class="sapUiSmallMarginTop" visible="{= ${/type} === 'A'?true:false}">
-					<Text text="Select Month: " class="sapUiTinyMargin"/>
-					<DatePicker valueFormat="yyyy-MM" displayFormat="yyyy-MM" value="{/allocationYearMonth}"/>
+					<Label text="Select Month: " class="sapUiTinyMargin" required="true"/>
+					<DatePicker valueFormat="yyyy-MM" displayFormat="yyyy-MM" value="{/allocationYearMonth}" enabled="{/allocationYearMonthEnabled}"/>
 				</HBox>
 				<HBox justifyContent="Center" class="sapUiSmallMarginTop" visible="{= ${/type} === 'B'?true:false}">
-					<Text text="Select Year : " class="sapUiTinyMargin"/>
-					<DatePicker valueFormat="yyyy" displayFormat="yyyy" value="{/budgetYearMonth}"/>
+					<Label text="Select Year: " class="sapUiTinyMargin" required="true"/>
+					<DatePicker valueFormat="yyyy" displayFormat="yyyy" value="{/budgetYearMonth}" enabled="{/budgetYearMonthEnabled}"/>
 				</HBox>
 			</VBox>
 			<l:Grid content="{path:'/addAllocationMapingData/map'}" class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L4 M6 S10">

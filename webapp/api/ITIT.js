@@ -7,8 +7,6 @@ sap.ui.define([
 		this._data = []; // structure to hold the nested data
 
 		this._model = model;
-		this._costPToCostCPath = '/CCVCP_CC';
-		this._costPToCostCData = [];
 
 		this._ITServiceTower = '/ITServiceMaster?$select=ITTower';
 		this._ITServiceTowerData = [];
@@ -32,15 +30,13 @@ sap.ui.define([
 			return new Promise(function (res, rej) {
 				var dataLoadCompleted = new Promise(function (resolve, reject) {
 					Promise.all([
-						this._fetchData(this._costPToCostCPath),
 						this._fetchData(this._ITServiceTower),
 						this._fetchData(this._ITServiceSubTower),
 						this._fetchData(this._ITService)
 					]).then(function (value) {
-						this._costPToCostCData = value[0];
-						this._ITServiceTowerData = value[1];
-						this._ITServiceSubTowerData = value[2];
-						this._ITServiceData = value[3];
+						this._ITServiceTowerData = value[0];
+						this._ITServiceSubTowerData = value[1];
+						this._ITServiceData = value[2];
 						resolve();
 					}.bind(this));
 				}.bind(this));
@@ -126,6 +122,7 @@ sap.ui.define([
 				"level": "IT Services",
 				"name": 'All Services',
 				"value": 0,
+				"valueInPercentage": 0,
 				"root": true,
 				"id": null,
 				"guid": "ITIT--ITSALL--All Services",
@@ -146,9 +143,10 @@ sap.ui.define([
 					"root": false,
 					"leaf": false,
 					"id": "",
-					"guid": "CPIT--ITST--" + e["ITSubTower"],
+					"guid": "ITIT--ITST--" + e["ITSubTower"],
 					"nodeType": "value",
 					"value": 0,
+					"valueInPercentage": 0,
 					"parentValue": e["ITTower"],
 					"childSum": 0,
 					"child": []
@@ -160,7 +158,7 @@ sap.ui.define([
 							"name": f["ITService"],
 							"root": false,
 							"id": f["ITServiceID"],
-							"guid": "CPIT--ITS--" + f["ITServiceID"],
+							"guid": "ITIT--ITS--" + f["ITServiceID"],
 							"leaf": true,
 							"nodeType": "value",
 							"value": 0
@@ -181,9 +179,10 @@ sap.ui.define([
 					"root": false,
 					"nodeType": "value",
 					"id": "",
-					"guid": "CPIT--ITT--" + e["ITTower"],
+					"guid": "ITIT--ITT--" + e["ITTower"],
 					"leaf": false,
 					"value": 0,
+					"valueInPercentage": 0,
 					"childSum": 0,
 					"child": []
 				};
@@ -198,8 +197,8 @@ sap.ui.define([
 		};
 	};
 
-	var CPIT = BaseObject.extend("pinaki.ey.CIO.allocation.api.CPIT", {
+	var ITIT = BaseObject.extend("pinaki.ey.CIO.allocation.api.ITIT", {
 		constructor: dataModel
 	});
-	return CPIT;
+	return ITIT;
 });

@@ -8,7 +8,8 @@ sap.ui.define([
 
 		this._model = model;
 		if (this._model.getData().type === 'A') {
-			this._costPToCostCPath = '/CCVCP_CC';
+			var dateyearMonth = this._model.getData().allocationYearMonth.replace('-','')+'01';
+			this._costPToCostCPath = '/CCVCP_CC_IP(IP_PP=\''+dateyearMonth+'\')/Execute';
 		} else {
 			this._costPToCostCPath = '/CCVCP_CCBudget?$filter=Year eq \'' + this._model.getData().budgetYearMonth+'\'';
 		}
@@ -89,6 +90,7 @@ sap.ui.define([
 						"level": "Cost Pool",
 						"name": e["CostPoolName"],
 						"value": 0,
+						"valueInPercentage": 0,
 						"root": true,
 						"id": e["CostPoolID"],
 						"guid": "CPIT--CP--" + e["CostPoolID"],
@@ -138,6 +140,7 @@ sap.ui.define([
 					"guid": "CPIT--ITST--" + e["ITSubTower"],
 					"nodeType": "value",
 					"value": 0,
+					"valueInPercentage": 0,
 					"parentValue": e["ITTower"],
 					"childSum": 0,
 					"child": []
@@ -152,7 +155,8 @@ sap.ui.define([
 							"guid": "CPIT--ITS--" + f["ITServiceID"],
 							"leaf": true,
 							"nodeType": "value",
-							"value": 0
+							"value": 0,
+							"valueInPercentage": 0
 						});
 					}
 				}.bind(this));
@@ -173,6 +177,7 @@ sap.ui.define([
 					"guid": "CPIT--ITT--" + e["ITTower"],
 					"leaf": false,
 					"value": 0,
+					"valueInPercentage": 0,
 					"childSum": 0,
 					"child": []
 				};

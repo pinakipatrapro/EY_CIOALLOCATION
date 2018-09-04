@@ -38,6 +38,7 @@
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
 						<DisplayListItem
+							highlight="{= ${childSum} === ${value}?'Success':'Warning' }"
 							class="{= ${value}===${childValue}?'allocListItemSuccess','allocListItemError'}"
 							label="{name}"
 							value="{value}"
@@ -58,12 +59,14 @@
 						</Toolbar>
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
-						<InputListItem label="{name}" type="Navigation">
+						<InputListItem label="{name}" type="Navigation"
+							highlight="{= ${childSum} === ${value}?'Success':'Warning' }"
+						>
 							<Input
-								change="onValueChange"
-								width="4rem"
-								value="{value}"
-								type="Number" />
+							change="onValueChange"
+							width="3rem"
+							value="{valueInPercentage}"
+							type="Number" />
 						</InputListItem>
 					</List>
 				 </Panel>
@@ -79,11 +82,13 @@
 						</Toolbar>
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
-						<InputListItem label="{name}" type="Navigation">
+						<InputListItem label="{name}" type="Navigation"
+							highlight="{= ${childSum} === ${value}?'Success':'Warning' }"
+						>
 							<Input
 								change="onValueChange"
-								width="4rem"
-								value="{value}"
+								width="3rem"
+								value="{valueInPercentage}"
 								type="Number" />
 						</InputListItem>
 					</List>
@@ -103,8 +108,8 @@
 						<InputListItem label="{name}">
 							<Input
 								change="onValueChange"
-								width="4rem"
-								value="{value}"
+								width="3rem"
+								value="{valueInPercentage}"
 								type="Number" />
 						</InputListItem>
 					</List>

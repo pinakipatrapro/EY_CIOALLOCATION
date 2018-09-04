@@ -133,7 +133,7 @@ sap.ui.define([
 			var reachedTop = false;
 			var model = this.getView().getModel();
 			var currentObject = model.getProperty(path);
-			currentObject.value = parseFloat(changedValue);
+			currentObject.valueInPercentage = parseFloat(changedValue);
 
 			if (currentObject["previousValue"] == undefined) {
 				currentObject["previousValue"] = 0;
@@ -146,10 +146,14 @@ sap.ui.define([
 			path = aContexts.join('/');
 
 			var parentObject = model.getProperty(path);
+			
+			currentObject.value = parseFloat(changedValue) * parentObject.value /100;
+			currentObject.value = parseFloat(currentObject.value.toFixed(2))
 			if (parentObject.childSum !== undefined) {
-				var sum = parseFloat(parentObject.childSum) + parseFloat(changedValue) - parseFloat(currentObject["previousValue"]);
+				var sum = parseFloat(parentObject.childSum) + currentObject.value - parseFloat(currentObject["previousValue"]);
 				if (sum > parentObject.value) {
 					sap.m.MessageToast.show('Error : Sum of value cannot be greater than the total allocated values');
+					currentObject.valueInPercentage = currentObject["previousValue"] / parentObject.value * 100;
 					currentObject.value = currentObject["previousValue"];
 				} else {
 					parentObject.childSum = sum;
@@ -157,7 +161,7 @@ sap.ui.define([
 			} else {
 				reachedTop = true;
 			}
-			currentObject["previousValue"] = currentObject.value.length == 0 ? 0 : currentObject.value;
+			currentObject["previousValue"] = currentObject.valueInPercentage.length == 0 ? 0 : currentObject.value;
 
 			// getSuperParent-Peers
 			var aContexts = path.split('/');
@@ -180,6 +184,7 @@ sap.ui.define([
 			}
 
 			this.addToChangeLog(oEvent);
+			this.propagatePercChange(oEvent);
 		},
 		addToChangeLog: function (oEvent) {
 			var changedObject = oEvent.getSource().getBindingContext().getObject();
@@ -189,6 +194,27 @@ sap.ui.define([
 			existingData[changedObject.guid] = changedObject.value;
 
 			model.setProperty('/changes', existingData);
+		},
+		propagatePercChange : function(oEvent){
+			var path = oEvent.getSource().getBindingContext().sPath;
+			var model = this.getView().getModel();
+			var data = model.getProperty(path);
+			data.childSum = 0;
+			
+			if(data.child){
+				data.child.forEach(function(e){
+					e.value = parseFloat((e.valueInPercentage * data.value/100).toFixed(2));
+					data.childSum = parseFloat((data.childSum  + e.value).toFixed(2));
+					if(e.child){
+						e.childSum = 0;
+						e.child.forEach(function(f){
+							f.value = parseFloat((f.valueInPercentage * e.value/100).toFixed(2));
+							e.childSum = parseFloat((e.childSum  + f.value).toFixed(2));
+						}.bind(this));
+					}
+				}.bind(this));
+			}
+			model.refresh();
 		}
 	});
 });
