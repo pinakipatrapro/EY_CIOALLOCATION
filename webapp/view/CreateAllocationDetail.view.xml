@@ -7,7 +7,7 @@
 				id="idObjectHeader"
 				binding="{0/}"
 				titleSelectorPress="openCostPoolSelection"
-				title="{levelName} : {name}"
+				title="{level} : {name}"
 				showTitleSelector="true"
 				number="{value}"
 				numberUnit="EUR" >
@@ -24,7 +24,7 @@
 					<ObjectAttribute title="Allocated Percentage" text="{= ${childSum}/${value}*100}" />
 				</attributes>
 			</ObjectHeader>
-			<l:Splitter id='idParentSplitter' height="700px" class="sapUiSizeCompact" binding="{0/}">
+			<l:Splitter id='idParentSplitter' height="600px" class="sapUiSizeCompact" binding="{0/}">
 				 <Panel>
 				 	<headerToolbar>
 						<Toolbar>

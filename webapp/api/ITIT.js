@@ -7,12 +7,7 @@ sap.ui.define([
 		this._data = []; // structure to hold the nested data
 
 		this._model = model;
-		if (this._model.getData().type === 'A') {
-			this._costPToCostCPath = '/CCVCP_CC';
-		} else {
-			this._costPToCostCPath = '/CCVCP_CCBudget?$filter=Year eq \'' + this._model.getData().budgetYearMonth+'\'';
-		}
-
+		this._costPToCostCPath = '/CCVCP_CC';
 		this._costPToCostCData = [];
 
 		this._ITServiceTower = '/ITServiceMaster?$select=ITTower';
@@ -23,7 +18,16 @@ sap.ui.define([
 		this._ITServiceData = [];
 
 		this._endpoint = '/eyhcp/CIO/Allocation/Services/Allocation.xsodata';
-
+		this.updateAllocations = function () {
+			var dataFromCCtoITS = this._createITServiceExistingAllocation('raw');
+			var itServices = this._model.getData().allocationData.ITIT[0].child;
+			this._model.getData().allocationData.ITIT[0].childSum = 0;
+			itServices.forEach(function (e, i) {
+				e.value = dataFromCCtoITS[i].value;
+				this._model.getData().allocationData.ITIT[0].childSum = this._model.getData().allocationData.ITIT[0].childSum + dataFromCCtoITS[i]
+					.value;
+			}.bind(this));
+		};
 		this.loadInitialData = function () {
 			return new Promise(function (res, rej) {
 				var dataLoadCompleted = new Promise(function (resolve, reject) {
@@ -44,9 +48,11 @@ sap.ui.define([
 					var ITST2ITS = this._buildITST2ITSHierarchy();
 					var ITT2ITS = this._buildITT2ITSHierarchy(ITST2ITS);
 
-					var cpData = this._buildCPHierarchy();
-					var finalData = this._buildCCHierarchy(cpData, ITT2ITS);
-					res(finalData);
+					// var cpData = this._buildCPHierarchy();
+					// var finalData = this._buildCCHierarchy(cpData, ITT2ITS);
+					var initialHier = this._buildInitialHierarchy();
+					var cpItsData = this._createITServiceExistingAllocation(initialHier, ITT2ITS);
+					res(cpItsData);
 				}.bind(this));
 			}.bind(this));
 
@@ -72,57 +78,62 @@ sap.ui.define([
 				});
 			}.bind(this));
 		};
-
-		//Build Hierarchies
-		this._buildCPHierarchy = function () {
-			var dataOut = [];
-			var data = this._costPToCostCData;
-			data.forEach(function (e, i) {
-				var alreadyExists = false;
-				dataOut.forEach(function (f) {
-					if (e["CostPoolID"] === f["id"]) {
-						alreadyExists = true;
-					}
-				}.bind(this));
-				if (!alreadyExists) {
-					dataOut.push({
-						"level": "Cost Pool",
-						"name": e["CostPoolName"],
-						"value": 0,
-						"root": true,
-						"id": e["CostPoolID"],
-						"guid": "CPIT--CP--" + e["CostPoolID"],
-						"leaf": false,
-						"childSum": 0,
-						"nodeType": "display"
+		//Get Flattened Data for Allocated IT Service Value
+		this._createITServiceExistingAllocation = function (initialHier, ITT2ITS) {
+			var cpitData = this._model.getData().allocationData.CPIT;
+			var oData = {};
+			cpitData.forEach(function (e) { //Cost Pool
+				e.child.forEach(function (f) { //CostCenter
+					f.child.forEach(function (g) { //IT Tower
+						g.child.forEach(function (h) { //IT Sub Tower
+							h.child.forEach(function (i) { //IT Services
+								oData[i.id + '-----' + i.name] = oData[i.id + '-----' + i.name] ? oData[i.id + '-----' + i.name] + i.value : i.value;
+							});
+						});
 					});
-				}
+				});
+			});
+			var outData = [];
+			var parentSum = 0;
+			Object.keys(oData).forEach(function (e) {
+				outData.push({
+					"level": "IT Service",
+					"name": e.split('-----')[1],
+					"root": false,
+					"leaf": false,
+					"id": e.split('-----')[0],
+					"guid": "ITIT--ITS--Input--" + e.split('-----')[0],
+					"nodeType": "display",
+					"value": oData[e],
+					"childSum": 0,
+					"child": ITT2ITS ? JSON.parse(JSON.stringify(ITT2ITS)) : []
+				});
+				parentSum = parentSum + parseFloat(oData[e]);
+			}.bind(this));
+			if (initialHier === 'raw') {
+				return outData;
+			}
+			initialHier.forEach(function (e) {
+				e.child = outData;
+				e.value = parentSum;
+			});
+			return initialHier;
+		};
+		// Build Initial Hierarchy
+		this._buildInitialHierarchy = function () {
+			var dataOut = [];
+			dataOut.push({
+				"level": "IT Services",
+				"name": 'All Services',
+				"value": 0,
+				"root": true,
+				"id": null,
+				"guid": "ITIT--ITSALL--All Services",
+				"leaf": false,
+				"childSum": 0,
+				"nodeType": "display"
 			});
 			return dataOut;
-		};
-		this._buildCCHierarchy = function (CPData, ITT2ITS) {
-			var flatData = this._costPToCostCData;
-			CPData.forEach(function (e) {
-				e.child = [];
-				flatData.forEach(function (f) {
-					if (e["id"] === f["CostPoolID"]) {
-						e.child.push({
-							"level": "Cost Center",
-							"name": f["CostCenterName"],
-							"root": false,
-							"leaf": false,
-							"id": f["CostCenterID"],
-							"guid": "CPIT--CC--" + f["CostCenterID"],
-							"nodeType": "display",
-							"value": parseFloat(f["AmountFormatted"]),
-							"childSum": 0,
-							"child": JSON.parse(JSON.stringify(ITT2ITS))
-						});
-						e.value = e.value + parseFloat(f["AmountFormatted"]);
-					}
-				}.bind(this));
-			}.bind(this));
-			return CPData;
 		};
 		this._buildITST2ITSHierarchy = function (CPData) {
 			var outData = [];

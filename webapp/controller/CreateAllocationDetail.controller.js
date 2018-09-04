@@ -1,8 +1,9 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"pinaki/ey/CIO/allocation/CIOAllocation/util/Constants",
-	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPIT"
-], function (Controller, Constants, CPIT) {
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPIT",
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITIT"
+], function (Controller, Constants, CPIT, ITIT) {
 	"use strict";
 	var routeData = {
 		id: ''
@@ -15,7 +16,8 @@ sap.ui.define([
 						CPIT: null,
 						ITIT: null,
 						currentPathDesc: ''
-					}
+					},
+					changes: {}
 				}, true);
 			}.bind(this), 0);
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -31,8 +33,9 @@ sap.ui.define([
 		loadApi: function () {
 			if (routeData.id === 'CPIT' && !this.getView().getModel().getProperty('/allocationData/CPIT/editingCompleted')) {
 				this.getView().bindElement('/allocationData/CPIT');
-				if (!this.getView().getModel().getProperty('/allocationData/CPIT/editingCompleted')) {
-					var CPITDataModel = new CPIT();
+				var editingComleted = this.getView().getModel().getProperty('/allocationData/CPIT/editingCompleted');
+				if (editingComleted || editingComleted == undefined) {
+					var CPITDataModel = new CPIT(this.getView().getModel());
 					this.getView().setBusy(true);
 					CPITDataModel.loadInitialData().then(function (data) {
 						this.getView().setBusy(false);
@@ -44,15 +47,19 @@ sap.ui.define([
 			}
 			if (routeData.id === 'ITIT') {
 				this.getView().bindElement('/allocationData/ITIT');
-				if (!this.getView().getModel().getProperty('/allocationData/ITIT/editingCompleted')) {
-					var CPITDataModel = new CPIT();
+				var editingComleted = this.getView().getModel().getProperty('/allocationData/ITIT/editingCompleted');
+				if (editingComleted || editingComleted == undefined) {
+					var ITITDataModel = new ITIT(this.getView().getModel());
 					this.getView().setBusy(true);
-					CPITDataModel.loadInitialData().then(function (data) {
+					ITITDataModel.loadInitialData().then(function (data) {
 						this.getView().setBusy(false);
-						// this.getView().getModel().setProperty('/allocationData/ITIT', data);
+						this.getView().getModel().setProperty('/allocationData/ITIT', data);
 						this.getView().getModel().setProperty('/allocationData/ITIT/editingCompleted', false);
 						this.getView().getModel().setProperty('/allocationData/ITIT/currentPathDesc', 'Map IT Services to IT Services');
 					}.bind(this));
+				} else {
+					var ITITDataModel = new ITIT(this.getView().getModel());
+					ITITDataModel.updateAllocations();
 				}
 			}
 		},
@@ -168,9 +175,20 @@ sap.ui.define([
 			path = aContexts.join('/');
 
 			var aParentParent = model.getProperty(path);
-			if (aParentParent.level === 'Cost Pool') {
+			if (aParentParent.level === 'Cost Pool' || aParentParent.level === "IT Services") {
 				aParentParent.childSum = parentPeerSum;
 			}
+
+			this.addToChangeLog(oEvent);
+		},
+		addToChangeLog: function (oEvent) {
+			var changedObject = oEvent.getSource().getBindingContext().getObject();
+			var model = this.getView().getModel();
+			var existingData = model.getProperty('/changes');
+
+			existingData[changedObject.guid] = changedObject.value;
+
+			model.setProperty('/changes', existingData);
 		}
 	});
 });
