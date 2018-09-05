@@ -1,9 +1,10 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"pinaki/ey/CIO/allocation/CIOAllocation/util/Constants",
+	"sap/m/MessageToast",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPIT",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITIT"
-], function (Controller, Constants, CPIT, ITIT) {
+], function (Controller, Constants, MessageToast, CPIT, ITIT) {
 	"use strict";
 	var routeData = {
 		id: ''
@@ -127,94 +128,113 @@ sap.ui.define([
 
 		},
 		onValueChange: function (oEvent) {
-			var changedValue = oEvent.getParameter('value');
-			changedValue.length == 0 ? changedValue = 0 : '';
-			var path = oEvent.getSource().getBindingContext().sPath;
-			var reachedTop = false;
+			var currentObject = oEvent.getSource().getBindingContext().getObject();
+			var path = oEvent.getSource().getBindingContext().getPath();
 			var model = this.getView().getModel();
-			var currentObject = model.getProperty(path);
-			currentObject.valueInPercentage = parseFloat(changedValue);
-
-			if (currentObject["previousValue"] == undefined) {
-				currentObject["previousValue"] = 0;
+			this.setValueHistory(currentObject);
+			//
+			if(oEvent.getSource().getValue().length === 0){
+				oEvent.getSource().setValue(0);
 			}
+			//Get Peers
+			var aPeersPath = path.split('/');
+			aPeersPath.pop();
 
-			//Get Parent
-			var aContexts = path.split('/');
-			aContexts.pop();
-			aContexts.pop();
-			path = aContexts.join('/');
-
-			var parentObject = model.getProperty(path);
-			
-			currentObject.value = parseFloat(changedValue) * parentObject.value /100;
-			currentObject.value = parseFloat(currentObject.value.toFixed(2))
-			if (parentObject.childSum !== undefined) {
-				var sum = parseFloat(parentObject.childSum) + currentObject.value - parseFloat(currentObject["previousValue"]);
-				if (sum > parentObject.value) {
-					sap.m.MessageToast.show('Error : Sum of value cannot be greater than the total allocated values');
-					currentObject.valueInPercentage = currentObject["previousValue"] / parentObject.value * 100;
-					currentObject.value = currentObject["previousValue"];
-				} else {
-					parentObject.childSum = sum;
-				}
-			} else {
-				reachedTop = true;
-			}
-			currentObject["previousValue"] = currentObject.valueInPercentage.length == 0 ? 0 : currentObject.value;
-
-			// getSuperParent-Peers
-			var aContexts = path.split('/');
-			aContexts.pop();
-			path = aContexts.join('/');
-			var parentPeerSum = 0;
-
-			var aParentPeers = model.getProperty(path);
-			aParentPeers.forEach(function (e) {
-				parentPeerSum = parentPeerSum + e.childSum;
+			var aPeers = model.getProperty(aPeersPath.join('/'));
+			var peersTotal = 0;
+			aPeers.forEach(function (e) {
+				peersTotal = peersTotal + e.valueInPercentage;
 			});
-
-			var aContexts = path.split('/');
-			aContexts.pop();
-			path = aContexts.join('/');
-
-			var aParentParent = model.getProperty(path);
-			if (aParentParent.level === 'Cost Pool' || aParentParent.level === "IT Services") {
-				aParentParent.childSum = parentPeerSum;
+			if (peersTotal > 100) {
+				currentObject.valueInPercentage = currentObject.previousValue;
+				this.showMessageToast('Sum of percenage cannot be greater than 100');
+				return;
+			} else {
+				this.propagatePercChangeCPIT(path);
 			}
-
-			this.addToChangeLog(oEvent);
-			this.propagatePercChange(oEvent);
+		},
+		setValueHistory: function (object) {
+			if (!object["previousValue"]) {
+				object["previousValue"] = 0;
+			}
+			setTimeout(function () {
+				object["previousValue"] = object.valueInPercentage;
+			}.bind(this), 0);
 		},
 		addToChangeLog: function (oEvent) {
 			var changedObject = oEvent.getSource().getBindingContext().getObject();
 			var model = this.getView().getModel();
 			var existingData = model.getProperty('/changes');
 
-			existingData[changedObject.guid] = changedObject.value;
+			existingData[changedObject.guid] = changedObject.valueInPercentage;
 
 			model.setProperty('/changes', existingData);
 		},
-		propagatePercChange : function(oEvent){
-			var path = oEvent.getSource().getBindingContext().sPath;
+		propagatePercChangeCPIT: function (path) {
 			var model = this.getView().getModel();
-			var data = model.getProperty(path);
-			data.childSum = 0;
-			
-			if(data.child){
-				data.child.forEach(function(e){
-					e.value = parseFloat((e.valueInPercentage * data.value/100).toFixed(2));
-					data.childSum = parseFloat((data.childSum  + e.value).toFixed(2));
-					if(e.child){
-						e.childSum = 0;
-						e.child.forEach(function(f){
-							f.value = parseFloat((f.valueInPercentage * e.value/100).toFixed(2));
-							e.childSum = parseFloat((e.childSum  + f.value).toFixed(2));
-						}.bind(this));
+			var currentObjectPath = path;
+			//Propagate Upwards
+			do {
+				var currentObject = model.getProperty(path);
+				var parentObject = this.getParentObject(path, 2).data;
+				var aPeers = this.getParentObject(path, 1).data;
+				if (currentObject.valueInPercentage !== undefined) {
+					currentObject.value = Math.round(currentObject.valueInPercentage * parentObject.value) / 100;
+				}
+
+				parentObject.childSum = 0;
+				aPeers.forEach(function (e) {
+					if (parentObject.root) {
+						parentObject.childSum = parentObject.childSum + e.childSum;
+					} else {
+						parentObject.childSum = parentObject.childSum + e.value;
 					}
-				}.bind(this));
+				});
+				path = this.getParentObject(path, 2).path;
+			} while (!!this.getParentObject(path, 2).data && !parentObject.root);
+
+			//Propagate Downwards
+			var currentObject = model.getProperty(currentObjectPath);
+			if (!currentObject.child) {
+				return;
 			}
-			model.refresh();
+			currentObject.childSum = 0;
+			currentObject.child.forEach(function (e) {
+				e.value = Math.round(e.valueInPercentage * currentObject.value) / 100;
+				currentObject.childSum = currentObject.childSum + e.value;
+				if (!e.child) {
+					return;
+				}
+				e.child.forEach(function (f) {
+					e.childSum = 0;
+					f.value = Math.round(f.valueInPercentage * e.value) / 100;
+					e.childSum = e.childSum + e.value;
+					if (!f.child) {
+						return;
+					}
+					f.child.forEach(function (g) {
+						f.childSum = 0;
+						g.value = Math.round(g.valueInPercentage * f.value) / 100;
+						f.childSum = f.childSum + f.value;
+					}.bind(this));
+				}.bind(this));
+			}.bind(this));
+
+		},
+		getParentObject: function (path, i) {
+			var model = this.getView().getModel();
+			var aPath = path.split('/');
+			while (i > 0) {
+				aPath.pop();
+				i--;
+			}
+			return {
+				data: model.getProperty(aPath.join('/')),
+				path: aPath.join('/')
+			};
+		},
+		showMessageToast: function (message) {
+			MessageToast.show(message);
 		}
 	});
 });

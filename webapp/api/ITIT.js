@@ -16,16 +16,11 @@ sap.ui.define([
 		this._ITServiceData = [];
 
 		this._endpoint = '/eyhcp/CIO/Allocation/Services/Allocation.xsodata';
+
 		this.updateAllocations = function () {
-			var dataFromCCtoITS = this._createITServiceExistingAllocation('raw');
-			var itServices = this._model.getData().allocationData.ITIT[0].child;
-			this._model.getData().allocationData.ITIT[0].value	 = 0;
-			itServices.forEach(function (e, i) {
-				e.value = dataFromCCtoITS[i].value;
-				this._model.getData().allocationData.ITIT[0].value = this._model.getData().allocationData.ITIT[0].value + e.value;
-			}.bind(this));
-			this._model.refresh(); //It is required to asynchronously update the bindings
+			
 		};
+
 		this.loadInitialData = function () {
 			return new Promise(function (res, rej) {
 				var dataLoadCompleted = new Promise(function (resolve, reject) {
@@ -161,7 +156,8 @@ sap.ui.define([
 							"guid": "ITIT--ITS--" + f["ITServiceID"],
 							"leaf": true,
 							"nodeType": "value",
-							"value": 0
+							"value": 0,
+							"valueInPercentage": 0
 						});
 					}
 				}.bind(this));

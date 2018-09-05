@@ -39,7 +39,6 @@
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
 						<DisplayListItem
 							highlight="{= ${childSum} === ${value}?'Success':'Warning' }"
-							class="{= ${value}===${childValue}?'allocListItemSuccess','allocListItemError'}"
 							label="{name}"
 							value="{value}"
 							type="Navigation"
@@ -64,9 +63,13 @@
 						>
 							<Input
 							change="onValueChange"
-							width="3rem"
-							value="{valueInPercentage}"
-							type="Number" />
+							width="4rem"
+							value="{path:'valueInPercentage' ,type: 'sap.ui.model.type.Float',
+							        		formatOptions: {
+							                   minFractionDigits: 0,
+							                   maxFractionDigits: 2
+						        			}
+							           }"/>
 						</InputListItem>
 					</List>
 				 </Panel>
@@ -87,9 +90,13 @@
 						>
 							<Input
 								change="onValueChange"
-								width="3rem"
-								value="{valueInPercentage}"
-								type="Number" />
+								width="4rem"
+								value="{path:'valueInPercentage' ,type: 'sap.ui.model.type.Float',
+							        		formatOptions: {
+							                   minFractionDigits: 0,
+							                   maxFractionDigits: 2
+						        			}
+							           }"/>
 						</InputListItem>
 					</List>
 				 </Panel>
@@ -108,9 +115,13 @@
 						<InputListItem label="{name}">
 							<Input
 								change="onValueChange"
-								width="3rem"
-								value="{valueInPercentage}"
-								type="Number" />
+								width="4rem"
+								value="{path:'valueInPercentage', type: 'sap.ui.model.type.Float',
+							        		formatOptions: {
+							                   minFractionDigits: 0,
+							                   maxFractionDigits: 2
+						        			}
+							           }"/>
 						</InputListItem>
 					</List>
 				 </Panel>
