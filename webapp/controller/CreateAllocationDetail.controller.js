@@ -2,15 +2,25 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"pinaki/ey/CIO/allocation/CIOAllocation/util/Constants",
 	"sap/m/MessageToast",
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/Navigator",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPIT",
-	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITIT"
-], function (Controller, Constants, MessageToast, CPIT, ITIT) {
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITIT",
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITBS"
+], function (Controller, Constants, MessageToast,Navigator, CPIT, ITIT,ITBS) {
 	"use strict";
 	var routeData = {
 		id: ''
 	};
+	var navigator = null;
 	return Controller.extend("pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationDetail", {
+		navToNextAllocation : function(oEvent){
+			navigator.navNext();
+		},
+		navToPreviousAllocation : function(oEvent){
+			navigator.navPrevious();
+		},
 		onInit: function () {
+			navigator = new Navigator(this);
 			setTimeout(function () {
 				this.getView().getModel().setData({
 					allocationData: {
@@ -61,6 +71,23 @@ sap.ui.define([
 				} else {
 					var ITITDataModel = new ITIT(this.getView().getModel());
 					ITITDataModel.updateAllocations();
+				}
+			}
+			if (routeData.id === 'ITBS') {
+				this.getView().bindElement('/allocationData/ITBS');
+				var editingComleted = this.getView().getModel().getProperty('/allocationData/ITBS/editingCompleted');
+				if (editingComleted || editingComleted == undefined) {
+					var ITBSDataModel = new ITBS(this.getView().getModel());
+					this.getView().setBusy(true);
+					ITBSDataModel.loadInitialData().then(function (data) {
+						this.getView().setBusy(false);
+						this.getView().getModel().setProperty('/allocationData/ITBS', data);
+						this.getView().getModel().setProperty('/allocationData/ITBS/editingCompleted', false);
+						this.getView().getModel().setProperty('/allocationData/ITBS/currentPathDesc', 'Map IT Services to Business Services');
+					}.bind(this));
+				} else {
+					var ITBSDataModel = new ITBS(this.getView().getModel());
+					ITBSDataModel.updateAllocations();
 				}
 			}
 		},

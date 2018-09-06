@@ -19,7 +19,7 @@
 					<DatePicker valueFormat="yyyy" displayFormat="yyyy" value="{/budgetYearMonth}" enabled="{/budgetYearMonthEnabled}"/>
 				</HBox>
 			</VBox>
-			<l:Grid content="{path:'/addAllocationMapingData/map'}" class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L4 M6 S10">
+			<l:Grid content="{path:'/addAllocationMapingData/map'}" class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L3 M6 S10">
 				<VBox alignItems="Center" class="sapUiTinyMargin vboxBorder">
 					<Label text="{name}" design="Bold" class="sapUiTinyMargin"/>
 					<Text text="Create allocation from {name}" maxLines="3" class="sapUiTinyMargin"/>
