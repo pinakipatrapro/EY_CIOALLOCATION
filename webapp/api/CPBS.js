@@ -18,18 +18,9 @@ sap.ui.define([
 		this._endpoint = '/eyhcp/CIO/Allocation/Services/Allocation.xsodata';
 
 		this.updateAllocations = function () {
-			var dataFromCCtoITS = this._createITServiceExistingAllocation('raw');
-			var itServices = this._model.getData().allocationData.ITBS[0].child;
-			this._model.getData().allocationData.ITBS[0].value = 0;
 
-			//Change as per percentage allocation
-			itServices.forEach(function (e, i) {
-				e.value = dataFromCCtoITS[i].value;
-				this._model.getData().allocationData.ITBS[0].value = this._model.getData().allocationData.ITBS[0].value + e.value;
-			}.bind(this));
-
-			//Propagate Upwards
-			var data = this._model.getData().allocationData.ITBS[0];
+			//Propagate Downwards
+			var data = this._model.getData().allocationData.CPBS[0];
 			data.childSum = 0;
 			data.child.forEach(function (e) { //It Services Input
 				e.childSum = 0;
@@ -70,9 +61,9 @@ sap.ui.define([
 				dataLoadCompleted.then(function () {
 					var BSG2BSC = this._buildBSG2BSCHierarchy();
 					var BS2BSG = this._buildBS2BSGHierarchy(BSG2BSC);
-					var initialHier = this._buildInitialHierarchy();
-					var itbsData = this._createITServiceExistingAllocation(initialHier, BS2BSG);
-					res(itbsData);
+					var initialHier = this._buildInitialHierarchy(BS2BSG);
+					
+					res(initialHier);
 				}.bind(this));
 			}.bind(this));
 
@@ -99,23 +90,22 @@ sap.ui.define([
 			}.bind(this));
 		};
 		// Build Initial Hierarchy
-		this._buildInitialHierarchy = function () {
+		this._buildInitialHierarchy = function (BS2BSG) {
 			var dataOut = [];
-			dataOut.push({
-				"level": "Business Services",
-				"name": 'All Services',
-				"value": 0,
-				"valueInPercentage": 0,
-				"root": true,
-				"id": null,
-				"guid": "ITBS--BSALL--All Services",
-				"leaf": false,
-				"childSum": 0,
-				"nodeType": "display"
+			var CPCCData = JSON.parse(JSON.stringify(this._model.getData().allocationData.CPIT));
+			CPCCData.forEach(function (e) {
+				e.value = e.value;
+				e.childSum = 0;
+				e.child.forEach(function (f) {
+					f.value = f.value;
+					f.childSum = 0;
+					delete f.child;
+					f.child = JSON.parse(JSON.stringify(BS2BSG));
+				});
 			});
-			return dataOut;
+			return CPCCData;
 		};
-		this._buildBSG2BSCHierarchy = function (CPData) {
+		this._buildBSG2BSCHierarchy = function () {
 			var outData = [];
 			var businessServiceGroup = this._businessServiceGroupData;
 			var businessServiceCategory = this._businessServiceCategoryData;
@@ -179,49 +169,8 @@ sap.ui.define([
 			}.bind(this));
 			return outData;
 		};
-		//Get Flattened Data for Allocated IT Service Value
-		this._createITServiceExistingAllocation = function (initialHier, BS2BSG) {
-			var ititData = this._model.getData().allocationData.ITIT;
-			var oData = {};
-			ititData.forEach(function (e) { 
-				e.child.forEach(function (f) { 
-					f.child.forEach(function (g) { 
-						g.child.forEach(function (h) {  
-							h.child.forEach(function (i) { 
-								oData[i.id + '-----' + i.name] = oData[i.id + '-----' + i.name] ? oData[i.id + '-----' + i.name] + i.value : i.value;
-							});
-						});
-					});
-				});
-			});
-			var outData = [];
-			var parentSum = 0;
-			Object.keys(oData).forEach(function (e) {
-				outData.push({
-					"level": "Business Service Category",
-					"name": e.split('-----')[1],
-					"root": false,
-					"leaf": false,
-					"id": e.split('-----')[0],
-					"guid": "ITBS--IBSC--" + e.split('-----')[0],
-					"nodeType": "display",
-					"value": oData[e],
-					"childSum": 0,
-					"child": BS2BSG ? JSON.parse(JSON.stringify(BS2BSG)) : []
-				});
-				parentSum = parentSum + parseFloat(oData[e]);
-			}.bind(this));
-			if (initialHier === 'raw') {
-				return outData;
-			}
-			initialHier.forEach(function (e) {
-				e.child = outData;
-				e.value = parentSum;
-			});
-			return initialHier;
-		};
 	};
-	
+
 	var ITBS = BaseObject.extend("pinaki.ey.CIO.allocation.api.ITBS", {
 		constructor: dataModel
 	});

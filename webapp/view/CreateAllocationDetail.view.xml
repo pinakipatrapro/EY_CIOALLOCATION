@@ -130,8 +130,10 @@
 		<footer>
 			<Toolbar>
 				<ToolbarSpacer/>
+				<Button text="View Summary" press="navToSummary"/>
 				<Button text="Previous" press="navToPreviousAllocation"/>
 				<Button text="Next" press="navToNextAllocation"/>
+				
 			</Toolbar>
 		</footer>
 	</Page>

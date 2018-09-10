@@ -5,8 +5,9 @@ sap.ui.define([
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/Navigator",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPIT",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITIT",
-	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITBS"
-], function (Controller, Constants, MessageToast,Navigator, CPIT, ITIT,ITBS) {
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITBS",
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPBS"
+], function (Controller, Constants, MessageToast,Navigator, CPIT, ITIT,ITBS, CPBS) {
 	"use strict";
 	var routeData = {
 		id: ''
@@ -19,6 +20,9 @@ sap.ui.define([
 		navToPreviousAllocation : function(oEvent){
 			navigator.navPrevious();
 		},
+		navToSummary  : function(oEvent){
+			navigator.navSummary();
+		},
 		onInit: function () {
 			navigator = new Navigator(this);
 			setTimeout(function () {
@@ -26,6 +30,9 @@ sap.ui.define([
 					allocationData: {
 						CPIT: null,
 						ITIT: null,
+						ITBS: null,
+						CPBS: null,
+						BSB: null,
 						currentPathDesc: ''
 					},
 					changes: {}
@@ -54,6 +61,9 @@ sap.ui.define([
 						this.getView().getModel().setProperty('/allocationData/CPIT/editingCompleted', false);
 						this.getView().getModel().setProperty('/allocationData/CPIT/currentPathDesc', 'Map Cost Pool to IT Services');
 					}.bind(this));
+				}else {
+					var CPITDataModel = new CPIT(this.getView().getModel());
+					CPITDataModel.updateAllocations();
 				}
 			}
 			if (routeData.id === 'ITIT') {
@@ -88,6 +98,23 @@ sap.ui.define([
 				} else {
 					var ITBSDataModel = new ITBS(this.getView().getModel());
 					ITBSDataModel.updateAllocations();
+				}
+			}
+			if (routeData.id === 'CPBS') {
+				this.getView().bindElement('/allocationData/CPBS');
+				var editingComleted = this.getView().getModel().getProperty('/allocationData/CPBS/editingCompleted');
+				if (editingComleted || editingComleted == undefined) {
+					var CPBSDataModel = new CPBS(this.getView().getModel());
+					this.getView().setBusy(true);
+					CPBSDataModel.loadInitialData().then(function (data) {
+						this.getView().setBusy(false);
+						this.getView().getModel().setProperty('/allocationData/CPBS', data);
+						this.getView().getModel().setProperty('/allocationData/CPBS/editingCompleted', false);
+						this.getView().getModel().setProperty('/allocationData/CPBS/currentPathDesc', 'Map Cost Pool to Business Services');
+					}.bind(this));
+				} else {
+					var CPBSDataModel = new CPBS(this.getView().getModel());
+					CPBSDataModel.updateAllocations();
 				}
 			}
 		},
@@ -177,8 +204,31 @@ sap.ui.define([
 				this.showMessageToast('Sum of percenage cannot be greater than 100');
 				return;
 			} else {
+				if(this.CPITCPBSException(oEvent)){
+					currentObject.valueInPercentage = currentObject.previousValue;
+					this.showMessageToast('Total allocated amount in IT Services and Business Services exceeds the total cost pool amount');
+				}
 				this.propagatePercChangeCPIT(path);
+				this.addToChangeLog(oEvent);
 			}
+		},
+		CPITCPBSException : function(oEvent){
+			var model = oEvent.getSource().getModel();
+			var sourcePath = oEvent.getSource().getBindingContext().getPath();
+			if(sourcePath.indexOf('CPIT') + sourcePath.indexOf('CPBS') < 0){
+				return false;
+			}
+			var cpitPercValuePath = sourcePath.replace('CPBS','CPIT');
+			var cpbsPercValuePath = sourcePath.replace('CPIT','CPBS');
+			var cpitPercValue  = model.getProperty(cpitPercValuePath).valueInPercentage;
+			if(!model.getProperty(cpbsPercValuePath)){
+				return false;
+			}
+			var cpbsPercValue  = model.getProperty(cpbsPercValuePath).valueInPercentage;
+			if(cpitPercValue + cpbsPercValue > 100){
+				return true;
+			}
+
 		},
 		setValueHistory: function (object) {
 			if (!object["previousValue"]) {
@@ -232,17 +282,17 @@ sap.ui.define([
 				if (!e.child) {
 					return;
 				}
+				e.childSum = 0;
 				e.child.forEach(function (f) {
-					e.childSum = 0;
 					f.value = Math.round(f.valueInPercentage * e.value) / 100;
-					e.childSum = e.childSum + e.value;
+					e.childSum = e.childSum + f.value;
 					if (!f.child) {
 						return;
 					}
+					f.childSum = 0;
 					f.child.forEach(function (g) {
-						f.childSum = 0;
 						g.value = Math.round(g.valueInPercentage * f.value) / 100;
-						f.childSum = f.childSum + f.value;
+						f.childSum = f.childSum + g.value;
 					}.bind(this));
 				}.bind(this));
 			}.bind(this));

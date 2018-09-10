@@ -32,8 +32,6 @@ sap.ui.define([
 			var data = this._model.getData().allocationData.ITIT[0];
 			data.childSum = 0;
 			data.child.forEach(function (e) { //It Services Input
-				// e.value = parseFloat((e.valueInPercentage * e.childSum / 100).toFixed(2));
-				data.childSum = data.childSum + e.value;
 				e.childSum = 0;
 				e.child.forEach(function (f) { //It tower
 					f.value = parseFloat((f.valueInPercentage * e.value / 100).toFixed(2));
@@ -49,6 +47,7 @@ sap.ui.define([
 						}.bind(this));
 					}.bind(this));
 				}.bind(this));
+				data.childSum = data.childSum + e.childSum;
 			}.bind(this));
 
 			this._model.refresh(); //It is required to asynchronously update the bindings

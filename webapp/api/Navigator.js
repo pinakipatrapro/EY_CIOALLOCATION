@@ -16,14 +16,23 @@ sap.ui.define([
 			var currentRoute = this.getCurrentRoute();
 			var indexOfCurrentRoute =  this._aRoutes.indexOf(currentRoute);
 			var nextRoute = this._aRoutes[indexOfCurrentRoute + 1 ];
+			if(!nextRoute){
+				return;
+			};
 			this._router.navTo("CreateAllocationDetail", {
 				id: nextRoute
 			});
+		};
+		this.navSummary = function () {
+			this._router.navTo("CreateAllocationSummary");
 		};
 		this.navPrevious = function () {
 			var currentRoute = this.getCurrentRoute();
 			var indexOfCurrentRoute =  this._aRoutes.indexOf(currentRoute);
 			var previousRoute = this._aRoutes[indexOfCurrentRoute - 1 ];
+			if(!previousRoute){
+				return;
+			};
 			this._router.navTo("CreateAllocationDetail", {
 				id: previousRoute
 			});

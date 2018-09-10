@@ -24,7 +24,34 @@ sap.ui.define([
 		this._ITServiceData = [];
 
 		this._endpoint = '/eyhcp/CIO/Allocation/Services/Allocation.xsodata';
+		
+		this.updateAllocations = function () {
 
+			//Propagate Downwards
+			var data = this._model.getData().allocationData.CPIT[0];
+			data.childSum = 0;
+			data.child.forEach(function (e) { //It Services Input
+				e.childSum = 0;
+				e.child.forEach(function (f) { //It tower
+					f.value = parseFloat((f.valueInPercentage * e.value / 100).toFixed(2));
+					e.childSum = e.childSum + f.value;
+					f.childSum = 0;
+					f.child.forEach(function (g) { //It sub tower
+						g.value = parseFloat((g.valueInPercentage * f.value / 100).toFixed(2));
+						f.childSum = f.childSum + g.value;
+						g.childSum = 0;
+						g.child.forEach(function (h) { //It services
+							h.value = parseFloat((h.valueInPercentage * g.value / 100).toFixed(2));
+							g.childSum = g.childSum + h.value;
+						}.bind(this));
+					}.bind(this));
+				}.bind(this));
+				data.childSum = data.childSum + e.childSum;
+			}.bind(this));
+
+			this._model.refresh(); //It is required to asynchronously update the bindings
+		};
+		
 		this.loadInitialData = function () {
 			return new Promise(function (res, rej) {
 				var dataLoadCompleted = new Promise(function (resolve, reject) {
@@ -117,10 +144,12 @@ sap.ui.define([
 							"guid": "CPIT--CC--" + f["CostCenterID"],
 							"nodeType": "display",
 							"value": parseFloat(f["AmountFormatted"]),
+							"initialValue": parseFloat(f["AmountFormatted"]),
 							"childSum": 0,
 							"child": JSON.parse(JSON.stringify(ITT2ITS))
 						});
 						e.value = e.value + parseFloat(f["AmountFormatted"]);
+						e.initialValue = e.value + parseFloat(f["AmountFormatted"]);
 					}
 				}.bind(this));
 			}.bind(this));
