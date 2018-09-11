@@ -9,8 +9,8 @@ sap.ui.define([
 			this.getView().getModel().setProperty('/addAllocationMapingData', Constants);
 			this.getView().getModel().setData({
 				type: "A",
-				allocationYearMonth: "",
-				budgetYearMonth: ""
+				allocationYearMonth: "2018-09",
+				budgetYearMonth: "2018"
 			}, true);
 		},
 		navToCostAllocDetails: function (oEvent) {

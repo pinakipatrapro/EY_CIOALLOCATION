@@ -140,7 +140,7 @@ sap.ui.define([
 							"level": "Business Service Category",
 							"name": f["BusinessServiceCategory"],
 							"root": false,
-							"id": f["BusinessServiceCategory"],
+							"id": f["BusinessServiceCategoryID"],
 							"guid": "ITBS--BSC--" + f["BusinessServiceCategoryID"],
 							"leaf": true,
 							"nodeType": "value",

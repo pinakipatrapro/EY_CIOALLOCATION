@@ -6,8 +6,9 @@ sap.ui.define([
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPIT",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITIT",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITBS",
-	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPBS"
-], function (Controller, Constants, MessageToast,Navigator, CPIT, ITIT,ITBS, CPBS) {
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPBS",
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/BSB"
+], function (Controller, Constants, MessageToast,Navigator, CPIT, ITIT,ITBS, CPBS,BSB) {
 	"use strict";
 	var routeData = {
 		id: ''
@@ -115,6 +116,23 @@ sap.ui.define([
 				} else {
 					var CPBSDataModel = new CPBS(this.getView().getModel());
 					CPBSDataModel.updateAllocations();
+				}
+			}
+			if (routeData.id === 'BSB') {
+				this.getView().bindElement('/allocationData/BSB');
+				var editingComleted = this.getView().getModel().getProperty('/allocationData/BSB/editingCompleted');
+				if (editingComleted || editingComleted == undefined) {
+					var BSBDataModel = new BSB(this.getView().getModel());
+					this.getView().setBusy(true);
+					BSBDataModel.loadInitialData().then(function (data) {
+						this.getView().setBusy(false);
+						this.getView().getModel().setProperty('/allocationData/BSB', data);
+						this.getView().getModel().setProperty('/allocationData/BSB/editingCompleted', false);
+						this.getView().getModel().setProperty('/allocationData/BSB/currentPathDesc', 'Map Business Services to Busines');
+					}.bind(this));
+				} else {
+					var BSBDataModel = new BSB(this.getView().getModel());
+					BSBDataModel.updateAllocations();
 				}
 			}
 		},

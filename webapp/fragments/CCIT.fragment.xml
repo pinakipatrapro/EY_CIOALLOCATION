@@ -1,15 +1,22 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core"
 	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Panel headerText="Cost Center to IT Services Mapping" expandable="true" expanded="true" content="{path:'/summary/CPIT'}">
-		<Toolbar>
-			<Text text="{CCName} ({CCId})"/>
-			<ToolbarSpacer/>
-			<Text text="{ITName} ({ITId})"/>
-			<ToolbarSpacer/>
-			<ProgressIndicator width="30rem"  height=".3rem" percentValue="{valueInPercentage}"
-				displayValue=" {allocatedValue} of {value} "
-				state="{= ${allocatedValue} === ${value}?'Success':'Warning' }"
-			/>
-		</Toolbar>
+	<Panel headerText="Cost Center to IT Services Mapping" expandable="true" expanded="true">
+		<List items="{path:'/summary/CPIT'}" growing="true" growingThreshold="30">
+			<headerToolbar>
+				<OverflowToolbar>
+					<SearchField search="searchMappings"/>
+				</OverflowToolbar>
+			</headerToolbar>
+			<CustomListItem>
+				<Toolbar>
+					<Text text="{CCName} ({CCId})"/>
+					<ToolbarSpacer/>
+					<Text text="{ITName} ({ITId})"/>
+					<ToolbarSpacer/>
+					<ProgressIndicator width="15rem" height=".3rem" percentValue="{valueInPercentage}" displayValue=" {allocatedValue} of {value} "
+						state="{= ${allocatedValue} === ${value}?'Success':'Warning' }"/>
+				</Toolbar>
+			</CustomListItem>
+		</List>
 	</Panel>
 </core:FragmentDefinition>

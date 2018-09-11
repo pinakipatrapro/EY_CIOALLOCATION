@@ -17,6 +17,7 @@ sap.ui.define([
 			var indexOfCurrentRoute =  this._aRoutes.indexOf(currentRoute);
 			var nextRoute = this._aRoutes[indexOfCurrentRoute + 1 ];
 			if(!nextRoute){
+				this.navSummary();
 				return;
 			};
 			this._router.navTo("CreateAllocationDetail", {

@@ -93,9 +93,9 @@ sap.ui.define([
 								oData.ITName = i.name;
 								oData.ITId = i.id;
 								oData.allocatedValue = i.value;
-								if (i.valueInPercentage > 0) {
+								// if (i.valueInPercentage > 0) {
 									aOutput.push(oData);
-								}
+								// }
 							});
 						});
 					});

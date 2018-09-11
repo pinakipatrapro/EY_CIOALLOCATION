@@ -2,7 +2,8 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"pinaki/ey/CIO/allocation/CIOAllocation/util/Constants",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/SummaryGenerator",
-], function (Controller, Constants,SummaryGenerator) {
+	"sap/ui/model/Filter"
+], function (Controller, Constants, SummaryGenerator,Filter) {
 	"use strict";
 
 	return Controller.extend("pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationSummary", {
@@ -13,6 +14,20 @@ sap.ui.define([
 		_onRouteMatched: function (oEvent) {
 			new SummaryGenerator(this.getView().getModel());
 		},
+		searchMappings: function (oEvent) {
+			var list = oEvent.getSource().getParent().getParent();
+			var searchString = oEvent.getParameter('query');
+			list.getBinding('items').filter(this.getSearchFilters(searchString));
+		},
+		getSearchFilters: function (query) {
+			return new Filter({
+				filters: [
+					new Filter("ITName", "Contains", query),
+					new Filter("CCName", "Contains", query)
+				],
+				and: false
+			});
+		}
 
 	});
 });
