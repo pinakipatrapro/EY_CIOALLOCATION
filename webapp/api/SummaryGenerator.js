@@ -5,8 +5,9 @@ sap.ui.define([
 	Array.prototype.groupBy = function (p1, p2, m1, m2) {
 		var arrayCopy = JSON.parse(JSON.stringify(this));
 		var groupedArray = [];
-		this.forEach(function (e, i) {
-			var oGroup = e;
+		var groupHistory = null;
+		var froupAggregator = function (e, arrayCopy, p1, p2, m1, m2, groupedArray) {
+			var oGroup = JSON.parse(JSON.stringify(e));
 			oGroup[m1] = 0;
 			oGroup[m2] = 0;
 			arrayCopy.forEach(function (f, j) {
@@ -15,14 +16,41 @@ sap.ui.define([
 					oGroup[m2] = oGroup[m2] + f[m2];
 				}
 			});
+			oGroup["valueInPercentage"] = Math.round(oGroup["allocatedValue"] / oGroup["value"] * 10000)/100;
 			groupedArray.push(oGroup);
+			return oGroup;
+		};
+
+		function sortByMultipleKey(keys) {
+			return function (a, b) {
+				if (keys.length == 0) return 0; // force to equal if keys run out
+				var key = keys[0]; // take out the first key
+				if (a[key] < b[key]) return -1; // will be 1 if DESC
+				else if (a[key] > b[key]) return 1; // will be -1 if DESC
+				else return sortByMultipleKey(keys.slice(1))(a, b);
+			};
+		}
+		this.sort(sortByMultipleKey([p1,p2]));
+		
+		this.forEach(function (e, i) {
+			if (!!groupHistory) {
+				if ((groupHistory[p1] === e[p1]) && (groupHistory[p2] === e[p2])) {
+					//Do Nothing
+				} else {
+					groupHistory = froupAggregator(e, arrayCopy, p1, p2, m1, m2, groupedArray);
+				}
+			} else {
+				groupHistory = froupAggregator(e, arrayCopy, p1, p2, m1, m2, groupedArray);
+			}
 		});
+		return groupedArray;
 	};
 	var constructor = function (model) {
 		this._model = model;
 		this._model.setProperty('/summary', {
 			total: 0,
-			totalAllocated: 0
+			totalAllocated: 0,
+			CPIT: null
 		});
 
 		//Define Utilty functions
@@ -73,7 +101,7 @@ sap.ui.define([
 					});
 				});
 			});
-			aOutput.groupBy('CCId', 'ITId', 'allocatedValue', 'percentageValue');
+			this._model.setProperty('/summary/CPIT', aOutput.groupBy('CCId', 'ITId', 'allocatedValue', 'value'));
 		};
 		//Call Functions
 		this._getTotalAmount();
