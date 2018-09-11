@@ -58,8 +58,8 @@
 						</Toolbar>
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
-						<InputListItem label="{name}" type="Navigation"
-							highlight="{= ${childSum} === ${value}?'Success':'Warning' }"
+						<InputListItem label="{name}" type="{= !${leaf} ? 'Navigation' : 'Inactive'}"
+							highlight="{= ${childSum} === ${value}?!${leaf}?'Success':'None':!${leaf}?'Warning':'None' }"
 						>
 							<Input
 							change="onValueChange"
