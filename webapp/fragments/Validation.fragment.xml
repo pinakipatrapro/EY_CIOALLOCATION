@@ -1,0 +1,8 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core"
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel headerText="Validation Status" expandable="true" expanded="true" content="{path:'/summary/validationMessages'}">
+		<Panel headerText = "{name} - {count} Errors" expandable="true" expanded="false" content="{path:'errorNodes'}">
+			<Panel headerText="{level} - {name}"/>
+		</Panel>
+	</Panel>
+</core:FragmentDefinition>

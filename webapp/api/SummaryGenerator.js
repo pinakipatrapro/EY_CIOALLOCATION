@@ -1,6 +1,7 @@
 sap.ui.define([
-	"sap/ui/base/Object"
-], function (BaseObject) {
+	"sap/ui/base/Object",
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/Validator"
+], function (BaseObject,Validator) {
 	"use strict";
 	Array.prototype.groupBy = function (p1, p2, m1, m2) {
 		var arrayCopy = JSON.parse(JSON.stringify(this));
@@ -50,9 +51,10 @@ sap.ui.define([
 		this._model.setProperty('/summary', {
 			total: 0,
 			totalAllocated: 0,
-			CPIT: null
+			CPIT: null,
+			validationMessages : null
 		});
-
+		
 		//Define Utilty functions
 		this._getTotalAmount = function () {
 			var total = 0;
@@ -93,9 +95,9 @@ sap.ui.define([
 								oData.ITName = i.name;
 								oData.ITId = i.id;
 								oData.allocatedValue = i.value;
-								// if (i.valueInPercentage > 0) {
+								if (i.valueInPercentage > 0) {
 									aOutput.push(oData);
-								// }
+								}
 							});
 						});
 					});
@@ -103,10 +105,16 @@ sap.ui.define([
 			});
 			this._model.setProperty('/summary/CPIT', aOutput.groupBy('CCId', 'ITId', 'allocatedValue', 'value'));
 		};
+		this._validate = function(){
+			var validator = new Validator(this._model);
+			var validationMessages = validator.validate();
+			this._model.setProperty('/summary/validationMessages', validationMessages);
+		};
 		//Call Functions
 		this._getTotalAmount();
 		this._getTotalAllocated();
 		this._getCCIT();
+		this._validate();
 	};
 
 	var SummaryGenerator = BaseObject.extend("pinaki.ey.CIO.allocation.api.SummaryGenerator", {

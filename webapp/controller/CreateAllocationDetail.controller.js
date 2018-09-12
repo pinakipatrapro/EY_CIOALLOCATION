@@ -56,7 +56,7 @@ sap.ui.define([
 			var BSBDataModel = new BSB(model);
 
 			if (!model.getProperty('/allocationData/dataLoaded')) {
-
+				this.getView().setBusy(true);
 				var generateData = new Promise(function (resolve, reject) {
 					CPITDataModel.loadInitialData().then(function (e) {
 						model.setProperty('/allocationData/CPIT', e);
@@ -69,6 +69,7 @@ sap.ui.define([
 									BSBDataModel.loadInitialData().then(function (i) {
 										model.setProperty('/allocationData/BSB', i);
 										model.setProperty('/allocationData/dataLoaded', true);
+										this.getView().setBusy(false);
 										resolve();
 									}.bind(this));
 								}.bind(this));
@@ -85,6 +86,7 @@ sap.ui.define([
 
 		},
 		loadApi: function () {
+			this.routeChangeResetVisibility();
 			if (routeData.id === 'CPIT') {
 				this.getView().bindElement('/allocationData/CPIT');
 				this.getView().getModel().setProperty('/allocationData/CPIT/currentPathDesc', 'Map Cost Pool to IT Services');
@@ -116,6 +118,17 @@ sap.ui.define([
 				var BSBDataModel = new BSB(this.getView().getModel());
 				BSBDataModel.updateAllocations();
 			}
+		},
+		routeChangeResetVisibility :function(){
+			var splitter = this.getView().byId("idParentSplitter");
+			var aPanel = splitter.getContentAreas();
+			for(var i = 1;i<aPanel.length;i++){
+				aPanel[i].setVisible(false);
+				aPanel[i].getContent()[0].removeSelections();
+			};
+			var objectHeader = this.getView().byId("idObjectHeader");
+			objectHeader.bindElement("0/");
+			splitter.bindElement("0/");
 		},
 		openCostPoolSelection: function (oEvent) {
 			var that = this;

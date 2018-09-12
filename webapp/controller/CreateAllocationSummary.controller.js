@@ -14,6 +14,9 @@ sap.ui.define([
 		_onRouteMatched: function (oEvent) {
 			new SummaryGenerator(this.getView().getModel());
 		},
+		navBack: function (oEvent) {
+			window.history.go(-1);
+		},
 		searchMappings: function (oEvent) {
 			var list = oEvent.getSource().getParent().getParent();
 			var searchString = oEvent.getParameter('query');
