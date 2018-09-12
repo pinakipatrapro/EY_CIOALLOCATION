@@ -8,20 +8,20 @@ sap.ui.define([
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/ITBS",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/CPBS",
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/BSB"
-], function (Controller, Constants, MessageToast,Navigator, CPIT, ITIT,ITBS, CPBS,BSB) {
+], function (Controller, Constants, MessageToast, Navigator, CPIT, ITIT, ITBS, CPBS, BSB) {
 	"use strict";
 	var routeData = {
 		id: ''
 	};
 	var navigator = null;
 	return Controller.extend("pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationDetail", {
-		navToNextAllocation : function(oEvent){
+		navToNextAllocation: function (oEvent) {
 			navigator.navNext();
 		},
-		navToPreviousAllocation : function(oEvent){
+		navToPreviousAllocation: function (oEvent) {
 			navigator.navPrevious();
 		},
-		navToSummary  : function(oEvent){
+		navToSummary: function (oEvent) {
 			navigator.navSummary();
 		},
 		onInit: function () {
@@ -34,7 +34,8 @@ sap.ui.define([
 						ITBS: null,
 						CPBS: null,
 						BSB: null,
-						currentPathDesc: ''
+						currentPathDesc: '',
+						dataLoaded: false
 					},
 					changes: {}
 				}, true);
@@ -47,93 +48,73 @@ sap.ui.define([
 			this.setData();
 		},
 		setData: function () {
-			this.loadApi(this.getView().getModel());
+			var model = this.getView().getModel();
+			var CPITDataModel = new CPIT(model);
+			var ITITDataModel = new ITIT(model);
+			var ITBSDataModel = new ITBS(model);
+			var CPBSDataModel = new CPBS(model);
+			var BSBDataModel = new BSB(model);
+
+			if (!model.getProperty('/allocationData/dataLoaded')) {
+
+				var generateData = new Promise(function (resolve, reject) {
+					CPITDataModel.loadInitialData().then(function (e) {
+						model.setProperty('/allocationData/CPIT', e);
+						ITITDataModel.loadInitialData().then(function (f) {
+							model.setProperty('/allocationData/ITIT', f);
+							ITBSDataModel.loadInitialData().then(function (g) {
+								model.setProperty('/allocationData/ITBS', g);
+								CPBSDataModel.loadInitialData().then(function (h) {
+									model.setProperty('/allocationData/CPBS', h);
+									BSBDataModel.loadInitialData().then(function (i) {
+										model.setProperty('/allocationData/BSB', i);
+										model.setProperty('/allocationData/dataLoaded', true);
+										resolve();
+									}.bind(this));
+								}.bind(this));
+							}.bind(this).bind(this));
+						}.bind(this));
+					}.bind(this));
+				}.bind(this));
+				generateData.then(function () {
+					this.loadApi(model);
+				}.bind(this));
+			} else {
+				this.loadApi(model);
+			}
+
 		},
 		loadApi: function () {
-			if (routeData.id === 'CPIT' && !this.getView().getModel().getProperty('/allocationData/CPIT/editingCompleted')) {
+			if (routeData.id === 'CPIT') {
 				this.getView().bindElement('/allocationData/CPIT');
-				var editingComleted = this.getView().getModel().getProperty('/allocationData/CPIT/editingCompleted');
-				if (editingComleted || editingComleted == undefined) {
-					var CPITDataModel = new CPIT(this.getView().getModel());
-					this.getView().setBusy(true);
-					CPITDataModel.loadInitialData().then(function (data) {
-						this.getView().setBusy(false);
-						this.getView().getModel().setProperty('/allocationData/CPIT', data);
-						this.getView().getModel().setProperty('/allocationData/CPIT/editingCompleted', false);
-						this.getView().getModel().setProperty('/allocationData/CPIT/currentPathDesc', 'Map Cost Pool to IT Services');
-					}.bind(this));
-				}else {
-					var CPITDataModel = new CPIT(this.getView().getModel());
-					CPITDataModel.updateAllocations();
-				}
+				this.getView().getModel().setProperty('/allocationData/CPIT/currentPathDesc', 'Map Cost Pool to IT Services');
+				var CPITDataModel = new CPIT(this.getView().getModel());
+				CPITDataModel.updateAllocations();
+
 			}
 			if (routeData.id === 'ITIT') {
 				this.getView().bindElement('/allocationData/ITIT');
-				var editingComleted = this.getView().getModel().getProperty('/allocationData/ITIT/editingCompleted');
-				if (editingComleted || editingComleted == undefined) {
-					var ITITDataModel = new ITIT(this.getView().getModel());
-					this.getView().setBusy(true);
-					ITITDataModel.loadInitialData().then(function (data) {
-						this.getView().setBusy(false);
-						this.getView().getModel().setProperty('/allocationData/ITIT', data);
-						this.getView().getModel().setProperty('/allocationData/ITIT/editingCompleted', false);
-						this.getView().getModel().setProperty('/allocationData/ITIT/currentPathDesc', 'Map IT Services to IT Services');
-					}.bind(this));
-				} else {
-					var ITITDataModel = new ITIT(this.getView().getModel());
-					ITITDataModel.updateAllocations();
-				}
+				this.getView().getModel().setProperty('/allocationData/ITIT/currentPathDesc', 'Map IT Services to IT Services');
+				var ITITDataModel = new ITIT(this.getView().getModel());
+				ITITDataModel.updateAllocations();
 			}
 			if (routeData.id === 'ITBS') {
 				this.getView().bindElement('/allocationData/ITBS');
-				var editingComleted = this.getView().getModel().getProperty('/allocationData/ITBS/editingCompleted');
-				if (editingComleted || editingComleted == undefined) {
-					var ITBSDataModel = new ITBS(this.getView().getModel());
-					this.getView().setBusy(true);
-					ITBSDataModel.loadInitialData().then(function (data) {
-						this.getView().setBusy(false);
-						this.getView().getModel().setProperty('/allocationData/ITBS', data);
-						this.getView().getModel().setProperty('/allocationData/ITBS/editingCompleted', false);
-						this.getView().getModel().setProperty('/allocationData/ITBS/currentPathDesc', 'Map IT Services to Business Services');
-					}.bind(this));
-				} else {
-					var ITBSDataModel = new ITBS(this.getView().getModel());
-					ITBSDataModel.updateAllocations();
-				}
+				this.getView().getModel().setProperty('/allocationData/ITBS/currentPathDesc', 'Map IT Services to Business Services');
+				var ITBSDataModel = new ITBS(this.getView().getModel());
+				ITBSDataModel.updateAllocations();
 			}
 			if (routeData.id === 'CPBS') {
 				this.getView().bindElement('/allocationData/CPBS');
-				var editingComleted = this.getView().getModel().getProperty('/allocationData/CPBS/editingCompleted');
-				if (editingComleted || editingComleted == undefined) {
-					var CPBSDataModel = new CPBS(this.getView().getModel());
-					this.getView().setBusy(true);
-					CPBSDataModel.loadInitialData().then(function (data) {
-						this.getView().setBusy(false);
-						this.getView().getModel().setProperty('/allocationData/CPBS', data);
-						this.getView().getModel().setProperty('/allocationData/CPBS/editingCompleted', false);
-						this.getView().getModel().setProperty('/allocationData/CPBS/currentPathDesc', 'Map Cost Pool to Business Services');
-					}.bind(this));
-				} else {
-					var CPBSDataModel = new CPBS(this.getView().getModel());
-					CPBSDataModel.updateAllocations();
-				}
+				this.getView().getModel().setProperty('/allocationData/CPBS/currentPathDesc', 'Map Cost Pool to Business Services');
+				var CPBSDataModel = new CPBS(this.getView().getModel());
+				CPBSDataModel.updateAllocations();
 			}
 			if (routeData.id === 'BSB') {
 				this.getView().bindElement('/allocationData/BSB');
-				var editingComleted = this.getView().getModel().getProperty('/allocationData/BSB/editingCompleted');
-				if (editingComleted || editingComleted == undefined) {
-					var BSBDataModel = new BSB(this.getView().getModel());
-					this.getView().setBusy(true);
-					BSBDataModel.loadInitialData().then(function (data) {
-						this.getView().setBusy(false);
-						this.getView().getModel().setProperty('/allocationData/BSB', data);
-						this.getView().getModel().setProperty('/allocationData/BSB/editingCompleted', false);
-						this.getView().getModel().setProperty('/allocationData/BSB/currentPathDesc', 'Map Business Services to Busines');
-					}.bind(this));
-				} else {
-					var BSBDataModel = new BSB(this.getView().getModel());
-					BSBDataModel.updateAllocations();
-				}
+				this.getView().getModel().setProperty('/allocationData/BSB/currentPathDesc', 'Map Business Services to Busines');
+				var BSBDataModel = new BSB(this.getView().getModel());
+				BSBDataModel.updateAllocations();
 			}
 		},
 		openCostPoolSelection: function (oEvent) {
@@ -171,33 +152,36 @@ sap.ui.define([
 		},
 		listSelectSetBinding: function (oEvent) {
 			var selectedItem = oEvent.getParameter('listItem');
-			var path = selectedItem.getBindingContext().sPath;
-			var newContext = path.substring(path.indexOf('child'), path.length) + '/';
+			var type = selectedItem.getType();
+			if (type !== "Inactive") {
+				var path = selectedItem.getBindingContext().sPath;
+				var newContext = path.substring(path.indexOf('child'), path.length) + '/';
 
-			var list = oEvent.getSource();
-			var panel = list.getParent();
-			var splitter = panel.getParent();
+				var list = oEvent.getSource();
+				var panel = list.getParent();
+				var splitter = panel.getParent();
 
-			var panelIndex = splitter.indexOfContentArea(panel);
-			var contents = splitter.getContentAreas();
+				var panelIndex = splitter.indexOfContentArea(panel);
+				var contents = splitter.getContentAreas();
 
-			var child = contents[panelIndex + 1];
-			child.bindElement(newContext);
+				var child = contents[panelIndex + 1];
+				child.bindElement(newContext);
 
-			// SetVisibility
-			contents.forEach(function (e) {
-				e.setVisible(true);
-			});
-			var isSelected = 'X';
-			for (var i = 0; i < contents.length; i++) {
-				var list = contents[i].getContent()[0];
-				if (isSelected !== 'X') {
-					contents[i].setVisible(false);
-				} else if (list.getSelectedItem() === null) {
-					isSelected = ' ';
+				// SetVisibility
+				contents.forEach(function (e) {
+
+					e.setVisible(true);
+				});
+				var isSelected = 'X';
+				for (var i = 0; i < contents.length; i++) {
+					var list = contents[i].getContent()[0];
+					if (isSelected !== 'X') {
+						contents[i].setVisible(false);
+					} else if (list.getSelectedItem() === null) {
+						isSelected = ' ';
+					}
 				}
 			}
-
 		},
 		onValueChange: function (oEvent) {
 			var currentObject = oEvent.getSource().getBindingContext().getObject();
@@ -205,7 +189,7 @@ sap.ui.define([
 			var model = this.getView().getModel();
 			this.setValueHistory(currentObject);
 			//
-			if(oEvent.getSource().getValue().length === 0){
+			if (oEvent.getSource().getValue().length === 0) {
 				oEvent.getSource().setValue(0);
 			}
 			//Get Peers
@@ -222,7 +206,7 @@ sap.ui.define([
 				this.showMessageToast('Sum of percenage cannot be greater than 100');
 				return;
 			} else {
-				if(this.CPITCPBSException(oEvent)){
+				if (this.CPITCPBSException(oEvent)) {
 					currentObject.valueInPercentage = currentObject.previousValue;
 					this.showMessageToast('Total allocated amount in IT Services and Business Services exceeds the total cost pool amount');
 				}
@@ -230,20 +214,24 @@ sap.ui.define([
 				this.addToChangeLog(oEvent);
 			}
 		},
-		CPITCPBSException : function(oEvent){
+		CPITCPBSException: function (oEvent) {
+			var level = oEvent.getSource().getBindingContext().getObject().level;
+			if(level !== "IT Tower" && level !== "Business Service"){
+				return;
+			}
 			var model = oEvent.getSource().getModel();
 			var sourcePath = oEvent.getSource().getBindingContext().getPath();
-			if(sourcePath.indexOf('CPIT') + sourcePath.indexOf('CPBS') < 0){
+			if (sourcePath.indexOf('CPIT') + sourcePath.indexOf('CPBS') < 0) {
 				return false;
 			}
-			var cpitPercValuePath = sourcePath.replace('CPBS','CPIT');
-			var cpbsPercValuePath = sourcePath.replace('CPIT','CPBS');
-			var cpitPercValue  = model.getProperty(cpitPercValuePath).valueInPercentage;
-			if(!model.getProperty(cpbsPercValuePath)){
+			var cpitPercValuePath = sourcePath.replace('CPBS', 'CPIT');
+			var cpbsPercValuePath = sourcePath.replace('CPIT', 'CPBS');
+			var cpitPercValue = model.getProperty(cpitPercValuePath).valueInPercentage;
+			if (!model.getProperty(cpbsPercValuePath)) {
 				return false;
 			}
-			var cpbsPercValue  = model.getProperty(cpbsPercValuePath).valueInPercentage;
-			if(cpitPercValue + cpbsPercValue > 100){
+			var cpbsPercValue = model.getProperty(cpbsPercValuePath).valueInPercentage;
+			if (cpitPercValue + cpbsPercValue > 100) {
 				return true;
 			}
 
