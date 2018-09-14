@@ -18,13 +18,13 @@
 				</attributes>
 			</ObjectHeader>
 			<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.Validation" type="XML"/>
-			<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.CCIT" type="XML"/>
 		</content>
 		<footer>
 			<OverflowToolbar>
 				<ToolbarSpacer/>
 				<Button text="Previous" press="navBack"/>
 				<Button text="Save" type="Emphasized"/>
+				<Button text="Save as Draft" type="Emphasized"/>
 			</OverflowToolbar>
 		</footer>
 	</Page>
