@@ -1,6 +1,6 @@
 <mvc:View controllerName="pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocation" xmlns:html="http://www.w3.org/1999/xhtml"
 	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m">
-	<Page title="{i18n>createAllocation}" floatingFooter="true">
+	<Page title="{i18n>createAllocation}" busyIndicatorDelay="0" floatingFooter="true">
 		<content>
 			<VBox>
 				<HBox justifyContent="Center" class="sapUiSmallMarginTop">
@@ -25,6 +25,48 @@
 					<Text text="Create allocation from {name}" maxLines="3" class="sapUiTinyMargin"/>
 					<Button press="navToCostAllocDetails" text="Continue" icon="sap-icon://open-command-field" type="Transparent" class="sapUiTinyMargin"/>
 				</VBox>
+			</l:Grid>
+			<l:Grid class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L6 M6 S10">
+			<List items="{
+							path:'viewModel>/DraftTemplate',
+							parameters: {select: 'GUID,TimeStamp,Description,UserName'},
+							sorter : {
+					            path : 'TimeStamp',
+					            descending : true
+					         },
+					         filters : [
+					            { path : 'Type', operator : 'EQ', value1 : 'Draft'}
+					        ]
+						}"
+					headerText="Draft(s)">
+				<StandardListItem  
+					type="Active"
+					press="openDraft"
+					info="{viewModel>Description} Changes"
+					title="Created By : {viewModel>UserName}"
+					description="Created At : {viewModel>TimeStamp}"
+				/>
+			</List>
+			<List items="{
+							path:'viewModel>/DraftTemplate',
+							parameters: {select: 'GUID,TimeStamp,Description,UserName,Name'},
+							sorter : {
+					            path : 'TimeStamp',
+					            descending : true
+					         },
+					         filters : [
+					            { path : 'Type', operator : 'EQ', value1 : 'Template'}
+					        ]
+						}"
+					headerText="Template(s)">
+				<StandardListItem  
+					type="Active"
+					press="openDraft"
+					info="{viewModel>Description} Changes"
+					title="{viewModel>Name}"
+					description="Created By : {viewModel>UserName},Created At : {viewModel>TimeStamp} "
+				/>
+			</List>
 			</l:Grid>
 		</content>
 		<footer>

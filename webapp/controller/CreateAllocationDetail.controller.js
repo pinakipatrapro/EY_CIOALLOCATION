@@ -79,6 +79,12 @@ sap.ui.define([
 				}.bind(this));
 				generateData.then(function () {
 					this.loadApi(model);
+					setTimeout(function(){
+						var event = this.getView().getModel().getProperty('/draftLoadEvent');	
+						if(!!event){
+							window.dispatchEvent(event);
+						}
+					}.bind(this),0);
 				}.bind(this));
 			} else {
 				this.loadApi(model);
@@ -261,8 +267,8 @@ sap.ui.define([
 			var changedObject = oEvent.getSource().getBindingContext().getObject();
 			var model = this.getView().getModel();
 			var existingData = model.getProperty('/changes');
-
-			existingData[changedObject.guid] = changedObject.valueInPercentage;
+			var changedPath = oEvent.getSource().getBindingContext().getPath();
+			existingData[changedPath] = changedObject.valueInPercentage;
 
 			model.setProperty('/changes', existingData);
 		},

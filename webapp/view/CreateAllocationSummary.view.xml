@@ -23,8 +23,9 @@
 			<OverflowToolbar>
 				<ToolbarSpacer/>
 				<Button text="Previous" press="navBack"/>
-				<Button text="Save" type="Emphasized"/>
-				<Button text="Save as Draft" type="Emphasized"/>
+				<Button text="Save as Template" type="Emphasized" press="saveTemplate"/>
+				<Button text="Save as Draft" type="Emphasized" press="saveDraft"/>
+				<Button text="Save" type="Accept"/>
 			</OverflowToolbar>
 		</footer>
 	</Page>

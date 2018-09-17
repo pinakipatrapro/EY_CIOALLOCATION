@@ -47,15 +47,15 @@ sap.ui.define([
 			var aErrorNodes = [];
 
 			CPBSData.forEach(function (e, j) {
-				this._pushErrorNodeSum(aErrorNodes, e, CPITData[j]);
+				this._pushErrorNodes(aErrorNodes, e, CPITData[j]);
 				e.child.forEach(function (f, k) {
 					this._pushErrorNodeSum(aErrorNodes, f, CPITData[j].child[k]);
 					f.child.forEach(function (g, l) {
-						this._pushErrorNodeSum(aErrorNodes, g, CPITData[j].child[k].child[l]);
+						this._pushErrorNodes(aErrorNodes, g, CPITData[j].child[k].child[l]);
 						g.child.forEach(function (h, m) {
-							this._pushErrorNodeSum(aErrorNodes, h, CPITData[j].child[k].child[l].child[m]);
+							this._pushErrorNodes(aErrorNodes, h, CPITData[j].child[k].child[l].child[m]);
 							h.child.forEach(function (i, n) {
-								this._pushErrorNodeSum(aErrorNodes, i, CPITData[j].child[k].child[l].child[m].child[n]);
+								this._pushErrorNodes(aErrorNodes, i, CPITData[j].child[k].child[l].child[m].child[n]);
 							}.bind(this));
 						}.bind(this));
 					}.bind(this));
@@ -69,9 +69,6 @@ sap.ui.define([
 				this._pushErrorNodes(aErrorNodes, e);
 				e.child.forEach(function (f) {
 					this._pushErrorNodes(aErrorNodes, f);
-					f.child.forEach(function (g) {
-						this._pushErrorNodes(aErrorNodes, g);
-					}.bind(this));
 				}.bind(this));
 			}.bind(this));
 			return aErrorNodes;
