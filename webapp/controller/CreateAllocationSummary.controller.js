@@ -27,7 +27,10 @@ sap.ui.define([
 			return new Filter({
 				filters: [
 					new Filter("ITName", "Contains", query),
-					new Filter("CCName", "Contains", query)
+					new Filter("CCName", "Contains", query),
+					new Filter("BSName", "Contains", query),
+					new Filter("BName", "Contains", query),
+					new Filter("ITSPName", "Contains", query),
 				],
 				and: false
 			});

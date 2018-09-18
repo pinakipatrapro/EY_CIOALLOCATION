@@ -2,9 +2,9 @@
 	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m">
 	<Page title="{i18n>createAllocation}" busyIndicatorDelay="0" floatingFooter="true">
 		<content>
-			<VBox>
+			<VBox alignItems="Center">
 				<HBox justifyContent="Center" class="sapUiSmallMarginTop">
-					<Text text="Select allocation type : " class="sapUiTinyMargin"/>
+					<Label text="Select allocation type : " class="sapUiTinyMargin"/>
 					<Select change="onAllocationTypeChange" selectedKey="{/type}" enabled="{/typeEnabled}">
 						<core:Item text="Actual" key="A"/>
 						<core:Item text="Budget" key="B"/>
@@ -18,6 +18,14 @@
 					<Label text="Select Year: " class="sapUiTinyMargin" required="true"/>
 					<DatePicker valueFormat="yyyy" displayFormat="yyyy" value="{/budgetYearMonth}" enabled="{/budgetYearMonthEnabled}"/>
 				</HBox>
+				<HBox justifyContent="Center" class="sapUiSmallMarginTop">
+					<Label text="Select allocation sub type : " class="sapUiTinyMargin" required="true"/>
+					<Select  forceSelection="false" selectedKey="{/subType}" enabled="{/subTypeEnabled}">
+						<core:Item text="Operation" key="Operation"/>
+						<core:Item text="Project" key="Project"/>
+					</Select>
+				</HBox>
+				<Button text="Reset" icon="sap-icon://reset" press="reloadPage" type="Transparent"/>
 			</VBox>
 			<l:Grid content="{path:'/addAllocationMapingData/map'}" class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L3 M6 S10">
 				<VBox alignItems="Center" class="sapUiTinyMargin vboxBorder">
@@ -27,7 +35,7 @@
 				</VBox>
 			</l:Grid>
 			<l:Grid class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L6 M6 S10">
-			<List items="{
+			<List mode="Delete" delete="deleteDraftTemplate" items="{
 							path:'viewModel>/DraftTemplate',
 							parameters: {select: 'GUID,TimeStamp,Description,UserName'},
 							sorter : {
@@ -47,7 +55,7 @@
 					description="Created At : {viewModel>TimeStamp}"
 				/>
 			</List>
-			<List items="{
+			<List mode="Delete"   delete="deleteDraftTemplate" items="{
 							path:'viewModel>/DraftTemplate',
 							parameters: {select: 'GUID,TimeStamp,Description,UserName,Name'},
 							sorter : {
@@ -72,8 +80,7 @@
 		<footer>
 			<OverflowToolbar>
 				<ToolbarSpacer/>
-				<!--<Button text="Reset"/>-->
-				<!--<Button text="Continue"/>-->
+				<Button text="Preview and Save" press="navToSummary"/>
 			</OverflowToolbar>
 		</footer>
 	</Page>

@@ -18,6 +18,13 @@
 				</attributes>
 			</ObjectHeader>
 			<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.Validation" type="XML"/>
+			<Panel headerText="Allocation Summary" expandable="true" expanded="false">
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.CCIT" type="XML"/>
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.ITIT" type="XML"/>
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.ITBS" type="XML"/>
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.CCBS" type="XML"/>
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.BSB" type="XML"/>
+			</Panel>
 		</content>
 		<footer>
 			<OverflowToolbar>

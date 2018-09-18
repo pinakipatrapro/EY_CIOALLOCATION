@@ -13,7 +13,7 @@ sap.ui.define([
 		this._pushErrorNodeSum = function (aErrorNodes, node, shadowNode, validateSum) {
 			if (node.value != (node.childSum + shadowNode.childSum) && node.childSum != undefined && validateSum) {
 				aErrorNodes.push(JSON.parse(JSON.stringify(node)));
-			} else {
+			} else if(!validateSum){
 				if (node.value != node.childSum && node.childSum != undefined) {
 					aErrorNodes.push(JSON.parse(JSON.stringify(node)));
 				}
@@ -47,15 +47,15 @@ sap.ui.define([
 			var aErrorNodes = [];
 
 			CPBSData.forEach(function (e, j) {
-				this._pushErrorNodes(aErrorNodes, e, CPITData[j]);
+				this._pushErrorNodeSum(aErrorNodes, e, CPITData[j],true);
 				e.child.forEach(function (f, k) {
-					this._pushErrorNodeSum(aErrorNodes, f, CPITData[j].child[k]);
+					this._pushErrorNodeSum(aErrorNodes, f, CPITData[j].child[k],true);
 					f.child.forEach(function (g, l) {
-						this._pushErrorNodes(aErrorNodes, g, CPITData[j].child[k].child[l]);
+						this._pushErrorNodeSum(aErrorNodes, g, CPITData[j].child[k].child[l]);
 						g.child.forEach(function (h, m) {
-							this._pushErrorNodes(aErrorNodes, h, CPITData[j].child[k].child[l].child[m]);
+							this._pushErrorNodeSum(aErrorNodes, h, CPITData[j].child[k].child[l].child[m]);
 							h.child.forEach(function (i, n) {
-								this._pushErrorNodes(aErrorNodes, i, CPITData[j].child[k].child[l].child[m].child[n]);
+								this._pushErrorNodeSum(aErrorNodes, i, CPITData[j].child[k].child[l].child[m].child[n]);
 							}.bind(this));
 						}.bind(this));
 					}.bind(this));

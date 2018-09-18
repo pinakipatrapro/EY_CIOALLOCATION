@@ -25,6 +25,21 @@ sap.ui.define([
 			});
 		};
 		this.navSummary = function () {
+			this._router.navTo("CreateAllocationDetail", {
+				id: 'CPIT'
+			});
+			this._router.navTo("CreateAllocationDetail", {
+				id: 'ITIT'
+			});
+			this._router.navTo("CreateAllocationDetail", {
+				id: 'ITBS'
+			});
+			this._router.navTo("CreateAllocationDetail", {
+				id: 'CPBS'
+			});
+			this._router.navTo("CreateAllocationDetail", {
+				id: 'BSB'
+			});
 			this._router.navTo("CreateAllocationSummary");
 		};
 		this.navPrevious = function () {

@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core"
 	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Panel headerText="Cost Center to IT Services Mapping" expandable="true" expanded="true">
-		<List items="{path:'/summary/CPIT'}" growing="true" growingThreshold="30">
+	<Panel headerText="IT Services to Business Services Mapping" expandable="true" expanded="true">
+		<List items="{path:'/summary/ITBS'}" growing="true" growingThreshold="30">
 			<headerToolbar>
 				<OverflowToolbar>
 					<SearchField search="searchMappings" width="40rem"/>
@@ -9,9 +9,9 @@
 			</headerToolbar>
 			<CustomListItem>
 				<Toolbar>
-					<Text text="{CCName} ({CCId})"/>
+					<Text text="{ITSName} ({ITSID})"/>
 					<ToolbarSpacer/>
-					<Text text="{ITName} ({ITId})"/>
+					<Text text="{BSName} ({BSID})"/>
 					<ToolbarSpacer/>
 					<ProgressIndicator width="15rem" height=".3rem" percentValue="{valueInPercentage}" displayValue=" {allocatedValue} of {value} "
 						state="{= ${allocatedValue} === ${value}?'Success':'Warning' }"/>
