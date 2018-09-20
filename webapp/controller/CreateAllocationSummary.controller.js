@@ -42,7 +42,7 @@ sap.ui.define([
 				changes: JSON.stringify(changes),
 				userName: sap.ushell.Container.getService("UserInfo").getUser().getFullName(),
 				type: 'Draft',
-				name : ''
+				name: ''
 			};
 			$.ajax({
 				url: '/eyhcp/CIO/Allocation/Scripts/SaveDraft.xsjs',
@@ -83,7 +83,7 @@ sap.ui.define([
 								changes: JSON.stringify(changes),
 								userName: sap.ushell.Container.getService("UserInfo").getUser().getFullName(),
 								type: 'Template',
-								name : oEvent.getSource().getParent().getContent()[0].getValue()
+								name: oEvent.getSource().getParent().getContent()[0].getValue()
 							};
 							$.ajax({
 								url: '/eyhcp/CIO/Allocation/Scripts/SaveDraft.xsjs',
@@ -94,8 +94,7 @@ sap.ui.define([
 									MessageToast.show("Template Saved Successfully");
 									that.getView().getModel('viewModel').refresh();
 								},
-								error: function (error) {
-								}
+								error: function (error) {}
 							});
 							oEvent.getSource().getParent().close();
 						}
@@ -103,6 +102,83 @@ sap.ui.define([
 				]
 			});
 			dialog.open();
+		},
+		saveAllocation: function (oEvent) {
+			this.checkIfErrorExists().then(function () {
+				this.triggerSaveRequest(this.formatSaveData()).then(function(e){
+					console.log(e);
+				}.bind(this)).catch(function(e){
+					console.log(e);
+				});
+			}.bind(this)).catch(function (e) {
+				MessageToast.show(e);
+			});
+		},
+		checkIfErrorExists: function () {
+			return new Promise(function (resolve, reject) {
+				var modelData = this.getView().getModel().getData().summary.validationMessages;
+				var total = modelData.ITIT.count +
+					modelData.BSB.count +
+					modelData.CPITBS.count +
+					modelData.ITBS.count;
+				if (total === 0) {
+					resolve();
+				} else {
+					reject(total + ' Errors occured. Please correct before saving. Alternatively use the save draft option ');
+				}
+			}.bind(this));
+		},
+		formatSaveData: function () {
+			var data = this.getView().getModel().getData();
+			var outData = {
+				alllcationType: data.type,
+				allocationSubType: data.subType,
+				actualPeriod: data.allocationYearMonth,
+				budgetPeriod: data.budgetYearMonth,
+				name: '',
+				description: '',
+				deviceInfo : '',
+				changes: Object.keys(data.changes).length,
+				changeData: JSON.stringify(data.changes),
+				allocatedData: [{
+					data: data.summary.BSB,
+					typeDescription: 'Business to Business Service',
+					type: 'BSB'
+				}, {
+					data: data.summary.ITIT,
+					typeDescription: 'IT Service to IT Service',
+					type: 'ITIT'
+				}, {
+					data: data.summary.ITBS,
+					typeDescription: 'IT Service to Business Service',
+					type: 'ITBS'
+				}, {
+					data: data.summary.CPIT,
+					typeDescription: 'Cost Pool to IT Service',
+					type: 'CPIT'
+				}, {
+					data: data.summary.CPBS,
+					typeDescription: 'Cost Pool to Business Service',
+					type: 'CPBS'
+				}, ]
+			};
+			return outData;
+		},
+		triggerSaveRequest: function (data) {
+			return new Promise(function (resolve, reject) {
+				$.ajax({
+					url: '/eyhcp/CIO/Allocation/Scripts/SaveAllocation.xsjs',
+					type: "POST",
+					data: JSON.stringify(data),
+					contentType: 'application/json; charset=utf-8',
+					success: function (response) {
+						resolve(response);
+					},
+					error: function (error) {
+						reject(error);
+					}
+				});
+			}.bind(this));
 		}
 
 	});

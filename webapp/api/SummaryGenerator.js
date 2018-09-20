@@ -89,11 +89,11 @@ sap.ui.define([
 						g.child.forEach(function (h) {
 							h.child.forEach(function (i) {
 								var oData = {};
-								oData.CCName = f.name;
-								oData.CCId = f.id;
+								oData.FromName = f.name;
+								oData.FromID = f.id;
 								oData.value = f.value;
-								oData.ITName = i.name;
-								oData.ITId = i.id;
+								oData.ToName = i.name;
+								oData.ToID = i.id;
 								oData.allocatedValue = i.value;
 								if (i.valueInPercentage > 0) {
 									aOutput.push(oData);
@@ -103,7 +103,7 @@ sap.ui.define([
 					});
 				});
 			});
-			this._model.setProperty('/summary/CPIT', aOutput.groupBy('CCId', 'ITId', 'allocatedValue', 'value'));
+			this._model.setProperty('/summary/CPIT', aOutput.groupBy('FromID', 'ToID', 'allocatedValue', 'value'));
 		};
 		this._getITIT = function () {
 			var aITS = this._model.getData().allocationData.ITIT[0].child;
@@ -113,11 +113,11 @@ sap.ui.define([
 					f.child.forEach(function (g) {
 						g.child.forEach(function (h) {
 							var oData = {};
-							oData.ITSPName = e.name;
-							oData.ITSPID = e.id;
+							oData.FromName = e.name;
+							oData.FromID = e.id;
 							oData.value = e.value;
-							oData.ITSCName = h.name;
-							oData.ITSCID = h.id;
+							oData.ToName = h.name;
+							oData.ToID = h.id;
 							oData.allocatedValue = h.value;
 							if (h.valueInPercentage > 0) {
 								aOutput.push(oData);
@@ -126,7 +126,7 @@ sap.ui.define([
 					});
 				});
 			});
-			this._model.setProperty('/summary/ITIT', aOutput.groupBy('ITSPID', 'ITSCID', 'allocatedValue', 'value'));
+			this._model.setProperty('/summary/ITIT', aOutput.groupBy('FromID', 'ToID', 'allocatedValue', 'value'));
 		};
 		this._getITBS = function () {
 			var aITS = this._model.getData().allocationData.ITBS[0].child;
@@ -136,11 +136,11 @@ sap.ui.define([
 					f.child.forEach(function (g) {
 						g.child.forEach(function (h) {
 							var oData = {};
-							oData.ITSName = e.name;
-							oData.ITSID = e.id;
+							oData.FromName = e.name;
+							oData.FromID = e.id;
 							oData.value = e.value;
-							oData.BSName = h.name;
-							oData.BSID = h.id;
+							oData.ToName = h.name;
+							oData.ToID = h.id;
 							oData.allocatedValue = h.value;
 							if (h.valueInPercentage > 0) {
 								aOutput.push(oData);
@@ -149,7 +149,7 @@ sap.ui.define([
 					});
 				});
 			});
-			this._model.setProperty('/summary/ITBS', aOutput.groupBy('ITSID', 'BSID', 'allocatedValue', 'value'));
+			this._model.setProperty('/summary/ITBS', aOutput.groupBy('FromID', 'ToID', 'allocatedValue', 'value'));
 		};
 		this._getCCBS = function () {
 			var aCP = this._model.getData().allocationData.CPBS;
@@ -160,11 +160,11 @@ sap.ui.define([
 						g.child.forEach(function (h) {
 							h.child.forEach(function (i) {
 								var oData = {};
-								oData.CCName = f.name;
-								oData.CCId = f.id;
+								oData.FromName = f.name;
+								oData.FromID = f.id;
 								oData.value = f.value;
-								oData.BSName = i.name;
-								oData.BSId = i.id;
+								oData.ToName = i.name;
+								oData.ToID = i.id;
 								oData.allocatedValue = i.value;
 								if (i.valueInPercentage > 0) {
 									aOutput.push(oData);
@@ -174,7 +174,7 @@ sap.ui.define([
 					});
 				});
 			});
-			this._model.setProperty('/summary/CPBS', aOutput.groupBy('CCId', 'BSId', 'allocatedValue', 'value'));
+			this._model.setProperty('/summary/CPBS', aOutput.groupBy('FromID', 'ToID', 'allocatedValue', 'value'));
 		};
 		this._getBSB = function () {
 			var aCP = this._model.getData().allocationData.BSB[0].child;
@@ -182,18 +182,18 @@ sap.ui.define([
 			aCP.forEach(function (e) {
 				e.child.forEach(function (f) {
 					var oData = {};
-					oData.BSName = e.name;
-					oData.BSId = e.id;
+					oData.FromName = e.name;
+					oData.FromID = e.id;
 					oData.value = e.value;
-					oData.BName = f.name;
-					oData.BId = f.id;
+					oData.ToName = f.name;
+					oData.ToID = f.id;
 					oData.allocatedValue = f.value;
 					if (f.valueInPercentage > 0) {
 						aOutput.push(oData);
 					}
 				});
 			});
-			this._model.setProperty('/summary/BSB', aOutput.groupBy('BSId', 'BId', 'allocatedValue', 'value'));
+			this._model.setProperty('/summary/BSB', aOutput.groupBy('FromID', 'ToID', 'allocatedValue', 'value'));
 		};
 		this._validate = function () {
 			var validator = new Validator(this._model);

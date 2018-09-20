@@ -9,9 +9,9 @@
 			</headerToolbar>
 			<CustomListItem>
 				<Toolbar>
-					<Text text="{CCName} ({CCId})"/>
+					<Text text="{FromName} ({FromID})"/>
 					<ToolbarSpacer/>
-					<Text text="{ITName} ({ITId})"/>
+					<Text text="{ToName} ({ToID})"/>
 					<ToolbarSpacer/>
 					<ProgressIndicator width="15rem" height=".3rem" percentValue="{valueInPercentage}" displayValue=" {allocatedValue} of {value} "
 						state="{= ${allocatedValue} === ${value}?'Success':'Warning' }"/>

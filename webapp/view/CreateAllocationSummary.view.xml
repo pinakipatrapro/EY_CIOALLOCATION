@@ -32,7 +32,7 @@
 				<Button text="Previous" press="navBack"/>
 				<Button text="Save as Template" type="Emphasized" press="saveTemplate"/>
 				<Button text="Save as Draft" type="Emphasized" press="saveDraft"/>
-				<Button text="Save" type="Accept"/>
+				<Button text="Save" type="Accept" press="saveAllocation"/>
 			</OverflowToolbar>
 		</footer>
 	</Page>
