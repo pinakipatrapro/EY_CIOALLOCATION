@@ -20,17 +20,17 @@ sap.ui.define([
 		masterSelectionChange: function () {
 			var modelData = this.getView().getModel().getData();
 			if (!!modelData.type.length && !!modelData.subType.length) {
-				 this.checkAllocationExists(modelData).then(function(e){
-				 	this.getView().setBusy(false);
-				 	if(e==="null"){
-				 		this.getView().getModel().setProperty('/mode','Create');
-				 		this.getView().getModel().setProperty('/allocationGuid','');
-				 	}else{
-				 		this.getView().getModel().setProperty('/mode','Edit');
-				 		this.getView().getModel().setProperty('/allocationGuid',e);
-				 		this.loadEditData(e);
-				 	}
-				 }.bind(this));
+				this.checkAllocationExists(modelData).then(function (e) {
+					this.getView().setBusy(false);
+					if (e === "null") {
+						this.getView().getModel().setProperty('/mode', 'Create');
+						this.getView().getModel().setProperty('/allocationGuid', '');
+					} else {
+						this.getView().getModel().setProperty('/mode', 'Edit');
+						this.getView().getModel().setProperty('/allocationGuid', e);
+						this.loadEditData(e);
+					}
+				}.bind(this));
 			}
 		},
 		checkAllocationExists: function (modelData) {
@@ -40,10 +40,10 @@ sap.ui.define([
 					url: '/eyhcp/CIO/Allocation/Scripts/CheckVersionExists.xsjs',
 					type: "POST",
 					data: JSON.stringify({
-						type : modelData.type,
-						subType : modelData.subType,
-						budgetYearMonth : modelData.budgetYearMonth,
-						allocationYearMonth : modelData.allocationYearMonth,
+						type: modelData.type,
+						subType: modelData.subType,
+						budgetYearMonth: modelData.budgetYearMonth,
+						allocationYearMonth: modelData.allocationYearMonth,
 					}),
 					contentType: 'application/json; charset=utf-8',
 					success: function (response) {
@@ -55,19 +55,19 @@ sap.ui.define([
 				});
 			}.bind(this));
 		},
-		loadEditData : function(guid){
+		loadEditData: function (guid) {
 			var that = this;
-				$.ajax({
-					url: '/eyhcp/CIO/Allocation/Services/Allocation.xsodata/EditLog?$filter=GUID eq \''+guid+'\'&$format=json',
-					type: "GET",
-					contentType: 'application/json; charset=utf-8',
-					success: function (response) {
-						that.getView().getModel().setProperty('/allocationEditLog',response.d.results);
-					},
-					error: function (error) {
-						
-					}
-				});
+			$.ajax({
+				url: '/eyhcp/CIO/Allocation/Services/Allocation.xsodata/EditLog?$filter=GUID eq \'' + guid + '\'&$format=json',
+				type: "GET",
+				contentType: 'application/json; charset=utf-8',
+				success: function (response) {
+					that.getView().getModel().setProperty('/allocationEditLog', response.d.results);
+				},
+				error: function (error) {
+
+				}
+			});
 		},
 		navToCostAllocDetails: function (oEvent, directNav) {
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -197,7 +197,7 @@ sap.ui.define([
 				}
 			});
 		},
-		loadTimelineVersion : function(oEvent){
+		loadTimelineVersion: function (oEvent) {
 			var that = this;
 			var changeLogGUID = oEvent.getSource().getBindingContext().getProperty('ChangeLogGUID');
 			$.ajax({
@@ -205,17 +205,34 @@ sap.ui.define([
 				type: "POST",
 				contentType: 'application/json; charset=utf-8',
 				data: JSON.stringify({
-					guid : changeLogGUID,
-					allocationGuid : that.getView().getModel().getProperty('/allocationGuid')
+					guid: changeLogGUID,
+					allocationGuid: that.getView().getModel().getProperty('/allocationGuid')
 				}),
 				success: function (response) {
-					 that.applyDraftValues(response);
-					 that.getView().getModel().setProperty('/mode','Create');
+					that.applyDraftValues(response);
+					that.getView().getModel().setProperty('/mode', 'Create');
 				},
 				error: function (error) {
-					 
+
 				}
 			});
+		},
+		resetToThisVersion: function (oEvent) {
+			var that = this;
+			var changeLogGuid = oEvent.getSource().getBindingContext().getProperty('ChangeLogGUID');
+			var allocationGuid = oEvent.getSource().getBindingContext().getProperty('GUID');
+			$.ajax({
+				url: '/eyhcp/CIO/Allocation/Scripts/RevertVersion.xsjs?guid=' + changeLogGuid+'&allocationGuid='+allocationGuid,
+				type: "GET",
+				success: function (response) {
+					sap.m.MessageToast.show(response);
+					that.masterSelectionChange();
+				},
+				error: function (error) {
+					sap.m.MessageToast.show('Error reverting version');
+				}
+			});
+
 		}
 	});
 });
