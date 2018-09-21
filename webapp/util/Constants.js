@@ -8,7 +8,7 @@ sap.ui.define([], function () {
 			"icon": "sap-icon://capital-projects"
 		}, {
 			"name": "Cost Pool to Business Service",
-			"id": "BPBS",
+			"id": "CPBS",
 			"selectVisible" : true,
 			"icon":"sap-icon://it-system"
 		},

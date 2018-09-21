@@ -1,0 +1,39 @@
+<mvc:View controllerName="pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationSummary" xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:core="sap.ui.core" xmlns:tnt="sap.tnt" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" displayBlock="true" xmlns="sap.m">
+	<Page title="Create Allocation - Summary" floatingFooter="true">
+		<content>
+			<ObjectHeader  
+				title="Allocation summary for {= ${/type}==='A'?'Actual':'Budget'}"
+				number="{/summary/total}"
+				numberUnit="EUR" >
+				<statuses>
+					<ProgressIndicator
+						percentValue="{= ${/summary/totalAllocated}/${/summary/total}*100}"
+						displayValue="{/summary/totalAllocated} of {/summary/total} allocated for {name}"
+						state="{= ${/summary/totalAllocated} === ${/summary/total}?'Success':'Warning' }"
+					/>
+				</statuses>
+				<attributes>
+					<ObjectAttribute title="Period" text="{= ${/type}==='A'?${/allocationYearMonth}:${/budgetYearMonth}}" />
+				</attributes>
+			</ObjectHeader>
+			<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.Validation" type="XML"/>
+			<Panel headerText="Allocation Summary" expandable="true" expanded="false">
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.CCIT" type="XML"/>
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.ITIT" type="XML"/>
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.ITBS" type="XML"/>
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.CCBS" type="XML"/>
+				<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.BSB" type="XML"/>
+			</Panel>
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button text="Previous" press="navBack"/>
+				<Button text="Save as Template" type="Emphasized" press="saveTemplate"/>
+				<Button text="Save as Draft" type="Emphasized" press="saveDraft"/>
+				<Button text="Save" type="Accept" press="saveAllocation"/>
+			</OverflowToolbar>
+		</footer>
+	</Page>
+</mvc:View>

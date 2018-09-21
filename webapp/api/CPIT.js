@@ -8,9 +8,20 @@ sap.ui.define([
 
 		this._model = model;
 		if (this._model.getData().type === 'A') {
-			this._costPToCostCPath = '/CCVCP_CC';
+			if(this._model.getData().subType === 'Operation'){
+				var subTypeString = ",IP_PJOP='Operation'";
+			}else{
+				var subTypeString = ",IP_PJOP='Project'";
+			}
+			var dateyearMonth = this._model.getData().allocationYearMonth.replace('-', '') + '01';
+			this._costPToCostCPath = '/CCVCP_CC_IP(IP_PP=\'' + dateyearMonth + '\''+subTypeString+')/Execute';
 		} else {
-			this._costPToCostCPath = '/CCVCP_CCBudget?$filter=Year eq \'' + this._model.getData().budgetYearMonth+'\'';
+			if(this._model.getData().subType === 'Operation'){
+				var subTypeString = "and (BudgetType eq 'Operation')";
+			}else{
+				var subTypeString = "and (BudgetType eq 'Project')";
+			}
+			this._costPToCostCPath = '/CCVCP_CCBudget?$filter=(Year eq \'' + this._model.getData().budgetYearMonth + '\')'+subTypeString;
 		}
 
 		this._costPToCostCData = [];
@@ -23,6 +34,34 @@ sap.ui.define([
 		this._ITServiceData = [];
 
 		this._endpoint = '/eyhcp/CIO/Allocation/Services/Allocation.xsodata';
+
+		this.updateAllocations = function () {
+
+			//Propagate Downwards
+			this._model.getData().allocationData.CPIT.forEach(function (data) {
+				data.childSum = 0;
+				data.child.forEach(function (e) { //It Services Input
+					e.childSum = 0;
+					e.child.forEach(function (f) { //It tower
+						f.value = parseFloat((f.valueInPercentage * e.value / 100).toFixed(2));
+						e.childSum = e.childSum + f.value;
+						f.childSum = 0;
+						f.child.forEach(function (g) { //It sub tower
+							g.value = parseFloat((g.valueInPercentage * f.value / 100).toFixed(2));
+							f.childSum = f.childSum + g.value;
+							g.childSum = 0;
+							g.child.forEach(function (h) { //It services
+								h.value = parseFloat((h.valueInPercentage * g.value / 100).toFixed(2));
+								g.childSum = g.childSum + h.value;
+							}.bind(this));
+						}.bind(this));
+					}.bind(this));
+					data.childSum = data.childSum + e.childSum;
+				}.bind(this));
+			}.bind(this));
+
+			this._model.refresh(); //It is required to asynchronously update the bindings
+		};
 
 		this.loadInitialData = function () {
 			return new Promise(function (res, rej) {
@@ -89,6 +128,7 @@ sap.ui.define([
 						"level": "Cost Pool",
 						"name": e["CostPoolName"],
 						"value": 0,
+						"valueInPercentage": 0,
 						"root": true,
 						"id": e["CostPoolID"],
 						"guid": "CPIT--CP--" + e["CostPoolID"],
@@ -115,10 +155,12 @@ sap.ui.define([
 							"guid": "CPIT--CC--" + f["CostCenterID"],
 							"nodeType": "display",
 							"value": parseFloat(f["AmountFormatted"]),
+							"initialValue": parseFloat(f["AmountFormatted"]),
 							"childSum": 0,
 							"child": JSON.parse(JSON.stringify(ITT2ITS))
 						});
 						e.value = e.value + parseFloat(f["AmountFormatted"]);
+						e.initialValue = e.value + parseFloat(f["AmountFormatted"]);
 					}
 				}.bind(this));
 			}.bind(this));
@@ -138,6 +180,7 @@ sap.ui.define([
 					"guid": "CPIT--ITST--" + e["ITSubTower"],
 					"nodeType": "value",
 					"value": 0,
+					"valueInPercentage": 0,
 					"parentValue": e["ITTower"],
 					"childSum": 0,
 					"child": []
@@ -152,7 +195,8 @@ sap.ui.define([
 							"guid": "CPIT--ITS--" + f["ITServiceID"],
 							"leaf": true,
 							"nodeType": "value",
-							"value": 0
+							"value": 0,
+							"valueInPercentage": 0
 						});
 					}
 				}.bind(this));
@@ -173,6 +217,7 @@ sap.ui.define([
 					"guid": "CPIT--ITT--" + e["ITTower"],
 					"leaf": false,
 					"value": 0,
+					"valueInPercentage": 0,
 					"childSum": 0,
 					"child": []
 				};

@@ -38,7 +38,7 @@
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
 						<DisplayListItem
-							class="{= ${value}===${childValue}?'allocListItemSuccess','allocListItemError'}"
+							highlight="{= ${childSum} === ${value}?'Success':'Warning' }"
 							label="{name}"
 							value="{value}"
 							type="Navigation"
@@ -58,12 +58,18 @@
 						</Toolbar>
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
-						<InputListItem label="{name}" type="Navigation">
+						<InputListItem label="{name}" type="{= !${leaf} ? 'Navigation' : 'Inactive'}"
+								highlight="{= ${childSum} === ${value}?!${leaf}?'Success':'None':!${leaf}?'Warning':'None' }"
+						>
 							<Input
-								change="onValueChange"
-								width="4rem"
-								value="{value}"
-								type="Number" />
+							change="onValueChange"
+							width="4rem"
+							value="{path:'valueInPercentage' ,type: 'sap.ui.model.type.Float',
+							        		formatOptions: {
+							                   minFractionDigits: 0,
+							                   maxFractionDigits: 2
+						        			}
+							           }"/>
 						</InputListItem>
 					</List>
 				 </Panel>
@@ -79,12 +85,18 @@
 						</Toolbar>
 					</headerToolbar>
 					<List mode="SingleSelectMaster" items="{path:'child/'}" selectionChange="listSelectSetBinding">
-						<InputListItem label="{name}" type="Navigation">
+						<InputListItem label="{name}" type="Navigation"
+							highlight="{= ${childSum} === ${value}?'Success':'Warning' }"
+						>
 							<Input
 								change="onValueChange"
 								width="4rem"
-								value="{value}"
-								type="Number" />
+								value="{path:'valueInPercentage' ,type: 'sap.ui.model.type.Float',
+							        		formatOptions: {
+							                   minFractionDigits: 0,
+							                   maxFractionDigits: 2
+						        			}
+							           }"/>
 						</InputListItem>
 					</List>
 				 </Panel>
@@ -104,15 +116,25 @@
 							<Input
 								change="onValueChange"
 								width="4rem"
-								value="{value}"
-								type="Number" />
+								value="{path:'valueInPercentage', type: 'sap.ui.model.type.Float',
+							        		formatOptions: {
+							                   minFractionDigits: 0,
+							                   maxFractionDigits: 2
+						        			}
+							           }"/>
 						</InputListItem>
 					</List>
 				 </Panel>
 			</l:Splitter>
 		</content>
 		<footer>
-			<Toolbar/>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<Button text="Preview and Save" press="navToSummary"/>
+				<Button text="Previous" press="navToPreviousAllocation"/>
+				<Button text="Next" press="navToNextAllocation"/>
+				
+			</Toolbar>
 		</footer>
 	</Page>
 </mvc:View>

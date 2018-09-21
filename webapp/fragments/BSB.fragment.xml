@@ -1,0 +1,22 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core"
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel headerText="Business Services to Business Services Mapping" expandable="true" expanded="true">
+		<List items="{path:'/summary/BSB'}" growing="true" growingThreshold="30">
+			<headerToolbar>
+				<OverflowToolbar>
+					<SearchField search="searchMappings" width="40rem"/>
+				</OverflowToolbar>
+			</headerToolbar>
+			<CustomListItem>
+				<Toolbar>
+					<Text text="{FromName} ({FromID})"/>
+					<ToolbarSpacer/>
+					<Text text="{ToName} ({ToID})"/>
+					<ToolbarSpacer/>
+					<ProgressIndicator width="15rem" height=".3rem" percentValue="{valueInPercentage}" displayValue=" {allocatedValue} of {value} "
+						state="{= ${allocatedValue} === ${value}?'Success':'Warning' }"/>
+				</Toolbar>
+			</CustomListItem>
+		</List>
+	</Panel>
+</core:FragmentDefinition>

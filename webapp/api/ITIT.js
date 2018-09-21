@@ -7,8 +7,6 @@ sap.ui.define([
 		this._data = []; // structure to hold the nested data
 
 		this._model = model;
-		this._costPToCostCPath = '/CCVCP_CC';
-		this._costPToCostCData = [];
 
 		this._ITServiceTower = '/ITServiceMaster?$select=ITTower';
 		this._ITServiceTowerData = [];
@@ -18,29 +16,54 @@ sap.ui.define([
 		this._ITServiceData = [];
 
 		this._endpoint = '/eyhcp/CIO/Allocation/Services/Allocation.xsodata';
+
 		this.updateAllocations = function () {
 			var dataFromCCtoITS = this._createITServiceExistingAllocation('raw');
 			var itServices = this._model.getData().allocationData.ITIT[0].child;
-			this._model.getData().allocationData.ITIT[0].value	 = 0;
+			this._model.getData().allocationData.ITIT[0].value = 0;
+
+			//Change as per percentage allocation
 			itServices.forEach(function (e, i) {
 				e.value = dataFromCCtoITS[i].value;
 				this._model.getData().allocationData.ITIT[0].value = this._model.getData().allocationData.ITIT[0].value + e.value;
 			}.bind(this));
+
+			//Propagate Upwards
+			var data = this._model.getData().allocationData.ITIT[0];
+			data.childSum = 0;
+			data.child.forEach(function (e) { //It Services Input
+				e.childSum = 0;
+				e.child.forEach(function (f) { //It tower
+					f.value = parseFloat((f.valueInPercentage * e.value / 100).toFixed(2));
+					e.childSum = e.childSum + f.value;
+					f.childSum = 0;
+					f.child.forEach(function (g) { //It sub tower
+						g.value = parseFloat((g.valueInPercentage * f.value / 100).toFixed(2));
+						f.childSum = f.childSum + g.value;
+						g.childSum = 0;
+						g.child.forEach(function (h) { //It services
+							h.value = parseFloat((h.valueInPercentage * g.value / 100).toFixed(2));
+							g.childSum = g.childSum + h.value;
+						}.bind(this));
+					}.bind(this));
+				}.bind(this));
+				data.childSum = data.childSum + e.childSum;
+			}.bind(this));
+
 			this._model.refresh(); //It is required to asynchronously update the bindings
 		};
+
 		this.loadInitialData = function () {
 			return new Promise(function (res, rej) {
 				var dataLoadCompleted = new Promise(function (resolve, reject) {
 					Promise.all([
-						this._fetchData(this._costPToCostCPath),
 						this._fetchData(this._ITServiceTower),
 						this._fetchData(this._ITServiceSubTower),
 						this._fetchData(this._ITService)
 					]).then(function (value) {
-						this._costPToCostCData = value[0];
-						this._ITServiceTowerData = value[1];
-						this._ITServiceSubTowerData = value[2];
-						this._ITServiceData = value[3];
+						this._ITServiceTowerData = value[0];
+						this._ITServiceSubTowerData = value[1];
+						this._ITServiceData = value[2];
 						resolve();
 					}.bind(this));
 				}.bind(this));
@@ -126,6 +149,7 @@ sap.ui.define([
 				"level": "IT Services",
 				"name": 'All Services',
 				"value": 0,
+				"valueInPercentage": 0,
 				"root": true,
 				"id": null,
 				"guid": "ITIT--ITSALL--All Services",
@@ -146,9 +170,10 @@ sap.ui.define([
 					"root": false,
 					"leaf": false,
 					"id": "",
-					"guid": "CPIT--ITST--" + e["ITSubTower"],
+					"guid": "ITIT--ITST--" + e["ITSubTower"],
 					"nodeType": "value",
 					"value": 0,
+					"valueInPercentage": 0,
 					"parentValue": e["ITTower"],
 					"childSum": 0,
 					"child": []
@@ -160,10 +185,11 @@ sap.ui.define([
 							"name": f["ITService"],
 							"root": false,
 							"id": f["ITServiceID"],
-							"guid": "CPIT--ITS--" + f["ITServiceID"],
+							"guid": "ITIT--ITS--" + f["ITServiceID"],
 							"leaf": true,
 							"nodeType": "value",
-							"value": 0
+							"value": 0,
+							"valueInPercentage": 0
 						});
 					}
 				}.bind(this));
@@ -181,9 +207,10 @@ sap.ui.define([
 					"root": false,
 					"nodeType": "value",
 					"id": "",
-					"guid": "CPIT--ITT--" + e["ITTower"],
+					"guid": "ITIT--ITT--" + e["ITTower"],
 					"leaf": false,
 					"value": 0,
+					"valueInPercentage": 0,
 					"childSum": 0,
 					"child": []
 				};
@@ -198,8 +225,8 @@ sap.ui.define([
 		};
 	};
 
-	var CPIT = BaseObject.extend("pinaki.ey.CIO.allocation.api.CPIT", {
+	var ITIT = BaseObject.extend("pinaki.ey.CIO.allocation.api.ITIT", {
 		constructor: dataModel
 	});
-	return CPIT;
+	return ITIT;
 });

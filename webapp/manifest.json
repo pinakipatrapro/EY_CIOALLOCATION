@@ -12,6 +12,15 @@
 		"sourceTemplate": {
 			"id": "ui5template.basicSAPUI5ApplicationProject",
 			"version": "1.40.12"
+		},
+		"dataSources": {
+			"paginatedService": {
+				"uri": "/eyhcp/CIO/Allocation/Services/Allocation.xsodata",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			}
 		}
 	},
 	"sap.ui": {
@@ -58,6 +67,9 @@
 			"": {
 				"type": "sap.ui.model.json.JSONModel"
 			},
+			"viewModel": {
+				"dataSource": "paginatedService"
+			},
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
@@ -103,6 +115,13 @@
 					"target": [
 						"CreateAllocationDetail"
 					]
+				},
+				{
+					"name": "CreateAllocationSummary",
+					"pattern": "CreateAllocationSummary",
+					"target": [
+						"CreateAllocationSummary"
+					]
 				}
 			],
 			"targets": {
@@ -123,6 +142,12 @@
 					"transition": "slide",
 					"clearControlAggregation": false,
 					"viewName": "CreateAllocationDetail"
+				},
+				"CreateAllocationSummary": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewName": "CreateAllocationSummary"
 				}
 			}
 		}

@@ -1,0 +1,16 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core"
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	
+	<Panel headerText="Validation Status" expandable="true" expanded="true" content="{path:'/summary/validationMessages'}">
+		
+		<Panel headerText = "{name} - {count} Errors" expandable="true" expanded="false" content="{path:'errorNodes'}">
+			<MessageStrip
+				text="Incomplete allocation in '{name}' under '{level}'. Only {childSum} out of {value} is allcoated"
+				type="Error"
+				showIcon="true"
+				showCloseButton="false"
+				class="sapUiTinyMarginBottom">
+			</MessageStrip>
+		</Panel>
+	</Panel>
+</core:FragmentDefinition>
