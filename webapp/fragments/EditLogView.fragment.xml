@@ -1,0 +1,35 @@
+<core:FragmentDefinition xmlns:m="sap.m" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core" xmlns="sap.suite.ui.commons"
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<m:MessageStrip visible="{= ${/mode} === 'Edit'}" text="{i18n>editEntryExists}"  showIcon="true"
+		class="sapUiLargeMarginBeginEnd alignCenterMStrip sapUiSmallMarginTopBottom" type="Warning"
+	/>
+	<Timeline
+		visible="{= ${/mode} === 'Edit'}"
+		enableDoubleSided="true"
+		groupBy="UserName"
+		growingThreshold="0"
+		sortOldestFirst="false"
+		content="{/allocationEditLog}">
+		<content>
+			<TimelineItem
+					dateTime="{CreatedOn}"
+					status="{= ${IsActive}==='X'?'Success':'None'}"
+					userNameClickable="false"
+					userPicture="{Photo}"
+					userName="{UserName}"
+					icon="">
+					<embeddedControl>
+						<m:VBox alignItems="Center">
+							<m:Text  text="{= ${IsActive}==='X'?'Active':'Inactive'} version" />
+							<m:Text text="{UserName} made {Changes} changes"/>
+							<m:Toolbar>
+								<m:ToolbarSpacer/>
+								<m:Button icon='sap-icon://edit' type="Transparent" text="Edit" press='loadTimelineVersion'/>
+								<m:Button visible="{= ${IsActive}==='X'? false:true}" icon='sap-icon://reset' type="Transparent" text="Revert to this" press='resetToThisVersion'/>
+							</m:Toolbar>
+						</m:VBox>
+					</embeddedControl>
+			</TimelineItem>
+		</content>
+	</Timeline>
+</core:FragmentDefinition>

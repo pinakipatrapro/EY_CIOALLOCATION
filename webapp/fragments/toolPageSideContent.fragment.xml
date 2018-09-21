@@ -4,14 +4,14 @@
 		<tnt:NavigationList>
 			<tnt:items> 
 				<tnt:NavigationListItem icon="sap-icon://menu2" text="Toggle Sidebar" select="toggleSidebar" />
-				<tnt:NavigationListItem icon="sap-icon://add" text="Create Allocations" select="navToCreateAllocation"/>
-				<tnt:NavigationListItem icon="sap-icon://cancel-share" text="View / Edit Allocations" select="navToGenerateData" expanded="true">
+				<tnt:NavigationListItem icon="sap-icon://add" text="Manage Allocations" select="navToCreateAllocation"/>
+				<!--<tnt:NavigationListItem icon="sap-icon://cancel-share" text="View / Edit Allocations" select="navToGenerateData" expanded="true">
 					<tnt:NavigationListItem   text="Cost Pool to IT Services" select="chlidItemPress" app:idControl="idGenDataBasicSettingsPanel"/>
 					<tnt:NavigationListItem icon="sap-icon://validate" text="Cost Pool to Business Services" select="chlidItemPress" app:idControl="idGenDataAdvSettingsPanel"/>
 					<tnt:NavigationListItem icon="sap-icon://measure" text="IT Services to IT Services" select="chlidItemPress" app:idControl="idGenDataWeightageAlloc"/>
 					<tnt:NavigationListItem icon="sap-icon://provision" text="IT Services to Business Services" select="chlidItemPress" app:idControl="idGenDataStatussPanel"/>
 					<tnt:NavigationListItem icon="sap-icon://provision" text="Business Services to Business" select="chlidItemPress" app:idControl="idGenDataStatussPanel"/>
-				</tnt:NavigationListItem>
+				</tnt:NavigationListItem>-->
 				<!--<tnt:NavigationListItem icon="sap-icon://upload-to-cloud" text="Upload Data" select="navToDataUpload" expanded="true">-->
 				<!--	<tnt:NavigationListItem icon="sap-icon://upload-to-cloud" text="Upload Excel Data" select="chlidItemPress" app:idControl="idUploadExcelData"/>-->
 				<!--</tnt:NavigationListItem>-->

@@ -14,9 +14,9 @@ sap.ui.define([
 		];
 		this.navNext = function () {
 			var currentRoute = this.getCurrentRoute();
-			var indexOfCurrentRoute =  this._aRoutes.indexOf(currentRoute);
-			var nextRoute = this._aRoutes[indexOfCurrentRoute + 1 ];
-			if(!nextRoute){
+			var indexOfCurrentRoute = this._aRoutes.indexOf(currentRoute);
+			var nextRoute = this._aRoutes[indexOfCurrentRoute + 1];
+			if (!nextRoute) {
 				this.navSummary();
 				return;
 			};
@@ -44,9 +44,9 @@ sap.ui.define([
 		};
 		this.navPrevious = function () {
 			var currentRoute = this.getCurrentRoute();
-			var indexOfCurrentRoute =  this._aRoutes.indexOf(currentRoute);
-			var previousRoute = this._aRoutes[indexOfCurrentRoute - 1 ];
-			if(!previousRoute){
+			var indexOfCurrentRoute = this._aRoutes.indexOf(currentRoute);
+			var previousRoute = this._aRoutes[indexOfCurrentRoute - 1];
+			if (!previousRoute) {
 				return;
 			};
 			this._router.navTo("CreateAllocationDetail", {
@@ -57,6 +57,9 @@ sap.ui.define([
 			var aHash = window.location.hash.split('/');
 			var currentPath = aHash[aHash.length - 1];
 			return currentPath;
+		};
+		this.navToAllocationHome = function () {
+			this._router.navTo("CreateAllocation");
 		};
 	};
 

@@ -95,7 +95,7 @@ sap.ui.define([
 								oData.ToName = i.name;
 								oData.ToID = i.id;
 								oData.allocatedValue = i.value;
-								if (i.valueInPercentage > 0) {
+								if (i.valueInPercentage > 0 && i.value > 0) {
 									aOutput.push(oData);
 								}
 							});
@@ -119,7 +119,7 @@ sap.ui.define([
 							oData.ToName = h.name;
 							oData.ToID = h.id;
 							oData.allocatedValue = h.value;
-							if (h.valueInPercentage > 0) {
+							if (h.valueInPercentage > 0 && h.value > 0) {
 								aOutput.push(oData);
 							}
 						});
@@ -142,7 +142,7 @@ sap.ui.define([
 							oData.ToName = h.name;
 							oData.ToID = h.id;
 							oData.allocatedValue = h.value;
-							if (h.valueInPercentage > 0) {
+							if (h.valueInPercentage > 0 && h.value > 0) {
 								aOutput.push(oData);
 							}
 						});
@@ -166,7 +166,7 @@ sap.ui.define([
 								oData.ToName = i.name;
 								oData.ToID = i.id;
 								oData.allocatedValue = i.value;
-								if (i.valueInPercentage > 0) {
+								if (i.valueInPercentage > 0 && i.value > 0) {
 									aOutput.push(oData);
 								}
 							});
@@ -188,7 +188,7 @@ sap.ui.define([
 					oData.ToName = f.name;
 					oData.ToID = f.id;
 					oData.allocatedValue = f.value;
-					if (f.valueInPercentage > 0) {
+					if (f.valueInPercentage > 0 && f.value > 0) {
 						aOutput.push(oData);
 					}
 				});

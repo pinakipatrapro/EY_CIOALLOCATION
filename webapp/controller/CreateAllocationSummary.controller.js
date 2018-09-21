@@ -4,13 +4,16 @@ sap.ui.define([
 	"pinaki/ey/CIO/allocation/CIOAllocation/api/SummaryGenerator",
 	"sap/ui/model/Filter",
 	"sap/m/MessageToast",
-], function (Controller, Constants, SummaryGenerator, Filter, MessageToast) {
+	"pinaki/ey/CIO/allocation/CIOAllocation/api/Navigator",
+	"sap/m/MessageBox"
+], function (Controller, Constants, SummaryGenerator, Filter, MessageToast, Navigator, MessageBox) {
 	"use strict";
-
+	var navigator = null;
 	return Controller.extend("pinaki.ey.CIO.allocation.CIOAllocation.controller.CreateAllocationSummary", {
 		onInit: function () {
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 			oRouter.getRoute("CreateAllocationSummary").attachPatternMatched(this._onRouteMatched, this);
+			navigator = new Navigator(this);
 		},
 		_onRouteMatched: function (oEvent) {
 			new SummaryGenerator(this.getView().getModel());
@@ -105,10 +108,20 @@ sap.ui.define([
 		},
 		saveAllocation: function (oEvent) {
 			this.checkIfErrorExists().then(function () {
-				this.triggerSaveRequest(this.formatSaveData()).then(function(e){
-					console.log(e);
-				}.bind(this)).catch(function(e){
-					console.log(e);
+				this.triggerSaveRequest(this.formatSaveData()).then(function (e) {
+					MessageBox.success(
+						"Allocations Saved Successfully", {
+							icon: sap.m.MessageBox.Icon.INFORMATION,
+							title: "Successfully Saved",
+							onClose: function (oAction) {
+								navigator.navToAllocationHome();
+								window.location.reload();
+							}
+						}
+					);
+
+				}.bind(this)).catch(function (e) {
+					MessageToast.show("Error saving allocations");
 				});
 			}.bind(this)).catch(function (e) {
 				MessageToast.show(e);
@@ -135,9 +148,13 @@ sap.ui.define([
 				allocationSubType: data.subType,
 				actualPeriod: data.allocationYearMonth,
 				budgetPeriod: data.budgetYearMonth,
+				allocationGuid: data.allocationGuid,
+				mode: data.allocationGuid.length > 0 ? 'Edit' : 'Create',
 				name: '',
 				description: '',
-				deviceInfo : '',
+				userName: sap.ushell.Container.getService("UserInfo").getUser().getFullName(),
+				userId: sap.ushell.Container.getService("UserInfo").getId(),
+				deviceInfo: '',
 				changes: Object.keys(data.changes).length,
 				changeData: JSON.stringify(data.changes),
 				allocatedData: [{

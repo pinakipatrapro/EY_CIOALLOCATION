@@ -5,36 +5,39 @@
 			<VBox alignItems="Center">
 				<HBox justifyContent="Center" class="sapUiSmallMarginTop">
 					<Label text="Select allocation type : " class="sapUiTinyMargin"/>
-					<Select change="onAllocationTypeChange" selectedKey="{/type}" enabled="{/typeEnabled}">
+					<Select  selectedKey="{/type}" enabled="{/typeEnabled}" change="masterSelectionChange">
 						<core:Item text="Actual" key="A"/>
 						<core:Item text="Budget" key="B"/>
 					</Select>
 				</HBox>
-				<HBox justifyContent="Center" class="sapUiSmallMarginTop" visible="{= ${/type} === 'A'?true:false}">
-					<Label text="Select Month: " class="sapUiTinyMargin" required="true"/>
-					<DatePicker valueFormat="yyyy-MM" displayFormat="yyyy-MM" value="{/allocationYearMonth}" enabled="{/allocationYearMonthEnabled}"/>
-				</HBox>
-				<HBox justifyContent="Center" class="sapUiSmallMarginTop" visible="{= ${/type} === 'B'?true:false}">
-					<Label text="Select Year: " class="sapUiTinyMargin" required="true"/>
-					<DatePicker valueFormat="yyyy" displayFormat="yyyy" value="{/budgetYearMonth}" enabled="{/budgetYearMonthEnabled}"/>
-				</HBox>
 				<HBox justifyContent="Center" class="sapUiSmallMarginTop">
 					<Label text="Select allocation sub type : " class="sapUiTinyMargin" required="true"/>
-					<Select  forceSelection="false" selectedKey="{/subType}" enabled="{/subTypeEnabled}">
+					<Select  forceSelection="false" selectedKey="{/subType}" enabled="{/subTypeEnabled}" change="masterSelectionChange">
 						<core:Item text="Operation" key="Operation"/>
 						<core:Item text="Project" key="Project"/>
 					</Select>
 				</HBox>
+				<HBox justifyContent="Center" class="sapUiSmallMarginTop" visible="{= ${/type} === 'A'?true:false}">
+					<Label text="Select Month: " class="sapUiTinyMargin" required="true"/>
+					<DatePicker valueFormat="yyyy-MM" displayFormat="yyyy-MM" value="{/allocationYearMonth}" 
+					enabled="{/allocationYearMonthEnabled}" change="masterSelectionChange"/>
+				</HBox>
+				<HBox justifyContent="Center" class="sapUiSmallMarginTop" visible="{= ${/type} === 'B'?true:false}">
+					<Label text="Select Year: " class="sapUiTinyMargin" required="true"/>
+					<DatePicker valueFormat="yyyy" displayFormat="yyyy" value="{/budgetYearMonth}" 
+					change="masterSelectionChange" enabled="{/budgetYearMonthEnabled}"/>
+				</HBox>
 				<Button text="Reset" icon="sap-icon://reset" press="reloadPage" type="Transparent"/>
 			</VBox>
-			<l:Grid content="{path:'/addAllocationMapingData/map'}" class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L3 M6 S10">
-				<VBox alignItems="Center" class="sapUiTinyMargin vboxBorder">
-					<Label text="{name}" design="Bold" class="sapUiTinyMargin"/>
-					<Text text="Create allocation from {name}" maxLines="3" class="sapUiTinyMargin"/>
-					<Button press="navToCostAllocDetails" text="Continue" icon="sap-icon://open-command-field" type="Transparent" class="sapUiTinyMargin"/>
-				</VBox>
-			</l:Grid>
-			<l:Grid class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L6 M6 S10">
+			<HBox  justifyContent="Center" visible="{= ${/mode} === 'Create'}" items="{path:'/addAllocationMapingData/map'}" class="sapUiSmallMarginTop" >
+				<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="{name}"
+					subheader="Create allocation from {name}" press="navToCostAllocDetails">
+					<TileContent unit=" " footer=" ">
+						<ImageContent src="{icon}" />
+					</TileContent>
+				</GenericTile>
+			</HBox>
+			<l:Grid class="sapUiSmallMarginTop" hSpacing="2" defaultSpan="L6 M6 S10" visible="{= ${/mode} === 'Create'}">
 			<List mode="Delete" delete="deleteDraftTemplate" items="{
 							path:'viewModel>/DraftTemplate',
 							parameters: {select: 'GUID,TimeStamp,Description,UserName'},
@@ -76,11 +79,12 @@
 				/>
 			</List>
 			</l:Grid>
+			<core:Fragment fragmentName="pinaki.ey.CIO.allocation.CIOAllocation.fragments.EditLogView" type="XML"/>
 		</content>
 		<footer>
 			<OverflowToolbar>
 				<ToolbarSpacer/>
-				<Button text="Preview and Save" press="navToSummary"/>
+				<Button text="Preview and Save" visible="{= ${/mode} === 'Create'}" press="navToSummary"/>
 			</OverflowToolbar>
 		</footer>
 	</Page>

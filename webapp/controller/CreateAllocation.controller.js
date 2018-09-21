@@ -13,9 +13,61 @@ sap.ui.define([
 			this.getView().getModel().setData({
 				type: "A",
 				subType: "",
-				allocationYearMonth: "2018-09",
-				budgetYearMonth: "2018"
+				allocationYearMonth: new Date().getFullYear().toString() + '-' + new Date().getMonth().toString().padStart(2, 0),
+				budgetYearMonth: new Date().getFullYear().toString()
 			}, true);
+		},
+		masterSelectionChange: function () {
+			var modelData = this.getView().getModel().getData();
+			if (!!modelData.type.length && !!modelData.subType.length) {
+				 this.checkAllocationExists(modelData).then(function(e){
+				 	this.getView().setBusy(false);
+				 	if(e==="null"){
+				 		this.getView().getModel().setProperty('/mode','Create');
+				 		this.getView().getModel().setProperty('/allocationGuid','');
+				 	}else{
+				 		this.getView().getModel().setProperty('/mode','Edit');
+				 		this.getView().getModel().setProperty('/allocationGuid',e);
+				 		this.loadEditData(e);
+				 	}
+				 }.bind(this));
+			}
+		},
+		checkAllocationExists: function (modelData) {
+			return new Promise(function (resolve, reject) {
+				this.getView().setBusy(true);
+				$.ajax({
+					url: '/eyhcp/CIO/Allocation/Scripts/CheckVersionExists.xsjs',
+					type: "POST",
+					data: JSON.stringify({
+						type : modelData.type,
+						subType : modelData.subType,
+						budgetYearMonth : modelData.budgetYearMonth,
+						allocationYearMonth : modelData.allocationYearMonth,
+					}),
+					contentType: 'application/json; charset=utf-8',
+					success: function (response) {
+						resolve(response);
+					},
+					error: function (error) {
+						reject(error);
+					}
+				});
+			}.bind(this));
+		},
+		loadEditData : function(guid){
+			var that = this;
+				$.ajax({
+					url: '/eyhcp/CIO/Allocation/Services/Allocation.xsodata/EditLog?$filter=GUID eq \''+guid+'\'&$format=json',
+					type: "GET",
+					contentType: 'application/json; charset=utf-8',
+					success: function (response) {
+						that.getView().getModel().setProperty('/allocationEditLog',response.d.results);
+					},
+					error: function (error) {
+						
+					}
+				});
 		},
 		navToCostAllocDetails: function (oEvent, directNav) {
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -34,7 +86,7 @@ sap.ui.define([
 					validation = true;
 				}
 			}
-			if(subType.length <1 ){
+			if (subType.length < 1) {
 				validation = false;
 			}
 			if (validation) {
@@ -47,6 +99,7 @@ sap.ui.define([
 				model.setProperty('/subTypeEnabled', false);
 			} else {
 				sap.m.MessageToast.show('Please fill in the required details');
+				this.getView().setBusy(false);
 			}
 		},
 		openDraft: function (oEvent) {
@@ -141,6 +194,26 @@ sap.ui.define([
 				error: function (error) {
 					MessageToast.show('Error Deleting Draft');
 					list.setBusy(false);
+				}
+			});
+		},
+		loadTimelineVersion : function(oEvent){
+			var that = this;
+			var changeLogGUID = oEvent.getSource().getBindingContext().getProperty('ChangeLogGUID');
+			$.ajax({
+				url: '/eyhcp/CIO/Allocation/Scripts/OpenEditLogVersion.xsjs',
+				type: "POST",
+				contentType: 'application/json; charset=utf-8',
+				data: JSON.stringify({
+					guid : changeLogGUID,
+					allocationGuid : that.getView().getModel().getProperty('/allocationGuid')
+				}),
+				success: function (response) {
+					 that.applyDraftValues(response);
+					 that.getView().getModel().setProperty('/mode','Create');
+				},
+				error: function (error) {
+					 
 				}
 			});
 		}
