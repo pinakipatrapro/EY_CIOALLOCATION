@@ -20,7 +20,7 @@
 						userNameClickable="false"
 						userPicture="{Photo}"
 						userName="{UserName}"
-						icon="{= ${Comment}==='Revert'?'sap-icon://undo':'sap-icon://edit'}">
+						icon="{= ${Comment}==='Revert'?'sap-icon://undo':${Comment}==='Create'?'sap-icon://create':'sap-icon://edit'}">
 						<embeddedControl>
 							<m:VBox alignItems="Center">
 								<m:Text  text="{= ${IsActive}==='X'?'Active':'Inactive'} version" />
