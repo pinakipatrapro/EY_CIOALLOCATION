@@ -49,10 +49,43 @@ sap.ui.define([
 				}.bind(this));
 				data.childSum = data.childSum + e.childSum;
 			}.bind(this));
-
+			//Auto allocate 100% 
+			if(!this._model.getData().allocationData.ITIT["initialAllAlloc"]){
+				this.autoAllocateParentToChild(); 
+			}
 			this._model.refresh(); //It is required to asynchronously update the bindings
 		};
-
+		this.autoAllocateParentToChild = function(){
+			var allITIT = this._model.getData().allocationData.ITIT[0];
+			var aITPServices = allITIT.child;
+			
+			allITIT.childSum = allITIT.value;
+			allITIT.valueInPercentage = 100;
+			
+			aITPServices.forEach(function(e){ //IT Service Parent
+				e.child.forEach(function (f) { //It tower
+					f.child.forEach(function (g) { //It sub tower
+						g.child.forEach(function (h) { //It services Child
+						 if(h.id === e.id){
+						 	f.value = e.value;
+						 	g.value = e.value;
+						 	h.value = e.value;
+						 	
+						 	f.valueInPercentage = 100;
+						 	g.valueInPercentage = 100;
+						 	h.valueInPercentage = 100;
+						 	
+						 	e.childSum = e.value;
+						 	f.childSum = e.value;
+						 	g.childSum = e.value;
+						 	
+						 }
+						}.bind(this));
+					}.bind(this));
+				}.bind(this));    
+			}.bind(this));
+			this._model.getData().allocationData.ITIT["initialAllAlloc"] = true;
+		};
 		this.loadInitialData = function () {
 			return new Promise(function (res, rej) {
 				var dataLoadCompleted = new Promise(function (resolve, reject) {
@@ -71,8 +104,6 @@ sap.ui.define([
 					var ITST2ITS = this._buildITST2ITSHierarchy();
 					var ITT2ITS = this._buildITT2ITSHierarchy(ITST2ITS);
 
-					// var cpData = this._buildCPHierarchy();
-					// var finalData = this._buildCCHierarchy(cpData, ITT2ITS);
 					var initialHier = this._buildInitialHierarchy();
 					var cpItsData = this._createITServiceExistingAllocation(initialHier, ITT2ITS);
 					res(cpItsData);
