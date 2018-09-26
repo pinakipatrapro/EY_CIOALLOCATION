@@ -222,7 +222,7 @@ sap.ui.define([
 			var changeLogGuid = oEvent.getSource().getBindingContext().getProperty('ChangeLogGUID');
 			var allocationGuid = oEvent.getSource().getBindingContext().getProperty('GUID');
 			$.ajax({
-				url: '/eyhcp/CIO/Allocation/Scripts/RevertVersion.xsjs?guid=' + changeLogGuid+'&allocationGuid='+allocationGuid,
+				url: '/eyhcp/CIO/Allocation/Scripts/RevertVersion.xsjs?guid=' + changeLogGuid + '&allocationGuid=' + allocationGuid,
 				type: "GET",
 				success: function (response) {
 					sap.m.MessageToast.show(response);
@@ -232,7 +232,48 @@ sap.ui.define([
 					sap.m.MessageToast.show('Error reverting version');
 				}
 			});
-
-		}
+		},
+		editTimelineSelect: function (oEvent) {
+			var selectedItem = oEvent.getSource().getParent();
+			var timelineGuid = selectedItem.getBindingContext().getProperty('ChangeLogGUID');
+			var list = new sap.m.List({
+				styleClass : 'sapUiSmallMargin',
+				noDataText : "No change(s) found ",
+				items: {
+					path: '/GUID(IP_GUID=\'' + timelineGuid + '\')/Execute',
+					template: new sap.m.StandardListItem({
+						title: '{FromName}({FromID}) to {ToName}({ToID})',
+						icon : '{= ${DeltaType} === "Changes" ? "sap-icon://journey-change" : ${DeltaType} === "Additions"?"sap-icon://add":"sap-icon://negative" }',
+						description : 'Value {Percentage} %',
+						infoState : '{= ${DeltaType} === "Changes" ? "Warning" : ${DeltaType} === "Additions"?"Success":"Error" }',
+						info : '{= ${DeltaType} === "Changes" ? "Changed from " + ${PercentageFrom} + "%" : ${DeltaType} === "Additions"?"Added":"Deleted" }'
+					}),
+					sorter :[	new sap.ui.model.Sorter('TypeDescription',false,true),
+								new sap.ui.model.Sorter('DeltaType',false,false)
+							]
+				}
+			});
+			list.setModel(this.getView().getModel('viewModel'));
+			var dialog = new sap.m.Dialog({
+				resizable : true,
+				stretch : true,
+				draggable : true,
+				customHeader : new sap.m.Toolbar({
+					content : [
+						new sap.m.ToolbarSpacer(),
+						new sap.m.Label({text:"Changes made in selected version", design:"Bold"}),
+						new sap.m.ToolbarSpacer(),
+						new sap.m.Button({
+							icon: 'sap-icon://decline',
+							press : function(oEvent){
+								oEvent.getSource().getParent().getParent().close();
+							}
+						}),
+					]
+				}),
+				content: list
+			});
+			dialog.open();
+		},
 	});
 });

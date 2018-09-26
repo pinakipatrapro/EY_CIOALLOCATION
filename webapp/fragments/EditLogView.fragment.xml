@@ -28,7 +28,9 @@
 								<m:Toolbar>
 									<m:ToolbarSpacer/>
 									<m:Button icon='sap-icon://edit' type="Transparent" text="Edit" press='loadTimelineVersion'/>
-									<m:Button visible="{= ${IsActive}==='X'? false:true}" icon='sap-icon://reset' type="Transparent" text="Revert to this" press='resetToThisVersion'/>
+									<!--visible="{= ${IsActive}==='X'? false:true}"-->
+									<m:Button icon="sap-icon://customer-history" press = "editTimelineSelect" type="Transparent"/>
+									<m:Button visible="false"  icon='sap-icon://reset' type="Transparent" text="Revert to this" press='resetToThisVersion'/>
 								</m:Toolbar>
 							</m:VBox>
 						</embeddedControl>

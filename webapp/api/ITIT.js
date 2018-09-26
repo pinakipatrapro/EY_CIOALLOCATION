@@ -50,7 +50,7 @@ sap.ui.define([
 				data.childSum = data.childSum + e.childSum;
 			}.bind(this));
 			//Auto allocate 100% 
-			if(!this._model.getData().allocationData.ITIT["initialAllAlloc"]){
+			if(!this._model.getData().allocationData.ITIT["initialAllAlloc"] && !this._model.getData().allocationGuid){
 				this.autoAllocateParentToChild(); 
 			}
 			this._model.refresh(); //It is required to asynchronously update the bindings
