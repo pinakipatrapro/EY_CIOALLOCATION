@@ -1,6 +1,7 @@
 sap.ui.define([
-	"sap/ui/base/Object"
-], function (BaseObject) {
+	"sap/ui/base/Object",
+	"sap/m/MessageToast"
+], function (BaseObject,MessageToast) {
 	"use strict";
 
 	var dataModel = function (model) {
@@ -62,10 +63,10 @@ sap.ui.define([
 			allITIT.childSum = allITIT.value;
 			allITIT.valueInPercentage = 100;
 			
-			aITPServices.forEach(function(e){ //IT Service Parent
-				e.child.forEach(function (f) { //It tower
-					f.child.forEach(function (g) { //It sub tower
-						g.child.forEach(function (h) { //It services Child
+			aITPServices.forEach(function(e,ip){ //IT Service Parent
+				e.child.forEach(function (f,i1) { //It tower
+					f.child.forEach(function (g,i2) { //It sub tower
+						g.child.forEach(function (h,i3) { //It services Child
 						 if(h.id === e.id){
 						 	f.value = e.value;
 						 	g.value = e.value;
@@ -79,12 +80,20 @@ sap.ui.define([
 						 	f.childSum = e.value;
 						 	g.childSum = e.value;
 						 	
+						 	//Add to changes
+						 	this._model.getData().changes['/allocationData/ITIT/0/child/'+ip+'/child/'+i1] = 100;
+							this._model.getData().changes['/allocationData/ITIT/0/child/'+ip+'/child/'+i1+'/child/'+i2] = 100;
+							this._model.getData().changes['/allocationData/ITIT/0/child/'+ip+'/child/'+i1+'/child/'+i2+'/child/'+i3] = 100;
+						 	
 						 }
 						}.bind(this));
 					}.bind(this));
 				}.bind(this));    
 			}.bind(this));
 			this._model.getData().allocationData.ITIT["initialAllAlloc"] = true;
+			setTimeout(function(){
+				MessageToast.show("Internal IT services are auto mapped. If you wish to change please specify the percentages explicitly");
+			},1000);
 		};
 		this.loadInitialData = function () {
 			return new Promise(function (res, rej) {
