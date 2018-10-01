@@ -287,9 +287,9 @@ sap.ui.define([
 				parentObject.childSum = 0;
 				aPeers.forEach(function (e) {
 					if (parentObject.root) {
-						parentObject.childSum = parentObject.childSum + e.childSum;
+						parentObject.childSum = Math.round((parentObject.childSum + e.childSum)*100)/100;
 					} else {
-						parentObject.childSum = parentObject.childSum + e.value;
+						parentObject.childSum = Math.round((parentObject.childSum + e.value)*100)/100
 					}
 				});
 				path = this.getParentObject(path, 2).path;
